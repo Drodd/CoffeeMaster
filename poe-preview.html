@@ -1,0 +1,1083 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>快手咖啡师</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #F5E6D8;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        #game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #title-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #6B4226;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            color: #F5E6D8;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #title-screen h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        #title-screen p {
+            font-size: 16px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        #start-btn {
+            margin-top: 40px;
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #E3A868;
+            color: #6B4226;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        #start-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        #game-interface {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+        
+        #info-panel {
+            background-color: #6B4226;
+            color: #F5E6D8;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+        
+        #timer {
+            font-size: 16px;
+        }
+        
+        #customer-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 14px;
+        }
+        
+        #recipe-hint {
+            background-color: #E3A868;
+            color: #6B4226;
+            padding: 5px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        #customer-interaction {
+            display: flex;
+            padding: 10px;
+            align-items: center;
+            background-color: #F5E6D8;
+            border-bottom: 1px solid #E3A868;
+        }
+        
+        #customer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            margin-right: 10px;
+            border: 2px solid #6B4226;
+            background-color: #DDD;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #speech-bubble {
+            background-color: white;
+            border-radius: 15px;
+            padding: 10px;
+            flex-grow: 1;
+            font-size: 14px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        #speech-bubble:before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 10px 10px 10px 0;
+            border-style: solid;
+            border-color: transparent white transparent transparent;
+        }
+        
+        #coffee-display {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 20px;
+            background-color: #F5E6D8;
+        }
+        
+        #coffee-cup {
+            width: 160px;
+            height: 240px;
+            background-color: #fff;
+            border-radius: 10px 10px 70px 70px;
+            position: relative;
+            border: 5px solid #DDD;
+            overflow: hidden;
+        }
+        
+        .liquid-layer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            transition: height 0.1s linear;
+        }
+        
+        #control-panel {
+            background-color: #8C593A;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .ingredient-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .ingredient-btn {
+            flex: 1;
+            padding: 15px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        
+        .ingredient-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        #coffee-btn {
+            background-color: #3C2415;
+        }
+        
+        #milk-btn {
+            background-color: #E8D4BE;
+            color: #6B4226;
+        }
+        
+        #water-btn {
+            background-color: #A7C7E7;
+            color: #2C4053;
+        }
+        
+        #finish-btn {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #E3A868;
+            color: #6B4226;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        
+        #finish-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        #results-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(107, 66, 38, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            color: #F5E6D8;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #results-screen h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .score-detail {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        #total-score {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #E3A868;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        #barista-title {
+            font-size: 24px;
+            margin-bottom: 30px;
+            background-color: #E3A868;
+            color: #6B4226;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        #play-again-btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #E3A868;
+            color: #6B4226;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        #play-again-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        #feedback-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #6B4226;
+            border: 3px solid #E3A868;
+            border-radius: 15px;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            z-index: 60;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 80%;
+            max-width: 300px;
+        }
+        
+        #feedback-message {
+            font-size: 20px;
+            color: #F5E6D8;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        #feedback-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #E3A868;
+            margin-bottom: 15px;
+        }
+        
+        #feedback-details {
+            font-size: 14px;
+            color: #F5E6D8;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        #continue-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #E3A868;
+            color: #6B4226;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="title-screen">
+            <h1>快手咖啡师</h1>
+            <p>游戏规则：</p>
+            <p>根据客人订单要求，通过精准控制原料顺序、比例和时间，调制出符合标准的咖啡。</p>
+            <p>长按原料按键注入，松开停止。点击完成按钮结束调制。</p>
+            <p>每局需要调制5位客人的咖啡，根据顺序正确性、比例误差率、完成速度进行评分。</p>
+            <button id="start-btn">开始游戏</button>
+        </div>
+        
+        <div id="game-interface">
+            <div id="info-panel">
+                <div id="timer">剩余时间: 30秒</div>
+                <div id="customer-count">客人: 0/5</div>
+            </div>
+            
+            <div id="customer-interaction">
+                <div id="customer-avatar">
+                    <!-- 客人头像会在这里显示 -->
+                </div>
+                <div id="speech-bubble">
+                    <!-- 客人对白会在这里显示 -->
+                </div>
+            </div>
+            
+            <div id="recipe-hint"></div>
+            
+            <div id="coffee-display">
+                <div id="coffee-cup">
+                    <!-- 液体层会在这里动态生成 -->
+                </div>
+            </div>
+            
+            <div id="control-panel">
+                <div class="ingredient-buttons">
+                    <button id="coffee-btn" class="ingredient-btn">咖啡</button>
+                    <button id="milk-btn" class="ingredient-btn">牛奶</button>
+                    <button id="water-btn" class="ingredient-btn">水</button>
+                </div>
+                <button id="finish-btn">完成</button>
+            </div>
+        </div>
+        
+        <div id="feedback-container">
+            <div id="feedback-message">调制完成!</div>
+            <div id="feedback-score">0分</div>
+            <div id="feedback-details"></div>
+            <button id="continue-btn">继续</button>
+        </div>
+        
+        <div id="results-screen">
+            <h2>游戏结束</h2>
+            <div id="order-accuracy" class="score-detail">订单准确性: 0%</div>
+            <div id="proportion-accuracy" class="score-detail">比例精确度: 0%</div>
+            <div id="time-efficiency" class="score-detail">时间效率: 0%</div>
+            <div id="total-score">总分: 0</div>
+            <div id="barista-title">咖啡学徒</div>
+            <button id="play-again-btn">再来一局</button>
+        </div>
+    </div>
+
+    <script>
+        // 咖啡配方定义
+        const RECIPES = {
+            latte: {
+                name: "拿铁",
+                ingredients: [
+                    { type: "coffee", ratio: 0.3 },
+                    { type: "milk", ratio: 0.7 }
+                ],
+                description: "30%咖啡 + 70%牛奶",
+                orderDialogues: [
+                    "一杯香浓的拿铁，请不要太甜。",
+                    "早安，我想来杯拿铁提提神。",
+                    "拿铁加多一点奶泡，谢谢。",
+                    "拿铁是我的心头好，麻烦来一杯。",
+                    "忙碌的一天，来杯拿铁缓解疲劳。",
+                    "我想要尝试你们店里最好的拿铁。",
+                    "天气有点冷，来杯热拿铁暖暖身子。",
+                    "上次喝的拿铁很棒，再来一杯。",
+                    "听说你们的拿铁很有名，给我来一杯。",
+                    "不加糖的拿铁，咖啡和牛奶的完美融合。"
+                ]
+            },
+            americano: {
+                name: "美式",
+                ingredients: [
+                    { type: "coffee", ratio: 0.5 },
+                    { type: "water", ratio: 0.5 }
+                ],
+                description: "50%咖啡 + 50%水",
+                orderDialogues: [
+                    "来杯醇厚的美式咖啡，不加糖。",
+                    "美式咖啡，提神又解乏。",
+                    "赶稿子中，需要一杯浓郁的美式。",
+                    "简单的美式咖啡最能体现咖啡的本质。",
+                    "我每天都要喝一杯美式，成了习惯。",
+                    "美式咖啡，越浓越好。",
+                    "加班熬夜，来杯美式提神。",
+                    "我喜欢原汁原味的美式咖啡。",
+                    "一杯美式，简单纯粹。",
+                    "你们的美式咖啡豆是哪里进口的？给我来一杯。"
+                ]
+            },
+            flatWhite: {
+                name: "澳白",
+                ingredients: [
+                    { type: "coffee", ratio: 0.3 },
+                    { type: "milk", ratio: 0.4 },
+                    { type: "coffee", ratio: 0.3 }
+                ],
+                description: "30%咖啡 + 40%牛奶 + 30%咖啡",
+                orderDialogues: [
+                    "来杯地道的澳白，注意咖啡和牛奶的层次感。",
+                    "澳白是我的最爱，平滑又浓郁。",
+                    "在悉尼喝过最好的澳白，你能做出相似的味道吗？",
+                    "我对澳白的要求很高，希望你能调制得完美。",
+                    "想尝尝正宗的澳白，听说你这里做得不错。",
+                    "澳洲回来后就爱上了澳白的口感。",
+                    "咖啡中的奢侈品，来杯澳白犒劳自己。",
+                    "想念墨尔本咖啡馆的澳白，给我来一杯。",
+                    "第一次尝试澳白，期待你的手艺。",
+                    "澳白的双重咖啡层，是我的心头好。"
+                ]
+            },
+            espresso: {
+                name: "意式浓缩",
+                ingredients: [
+                    { type: "coffee", ratio: 0.7 }
+                ],
+                description: "70%咖啡",
+                orderDialogues: [
+                    "一杯意式浓缩，要纯正的意式风味。",
+                    "需要意式浓缩咖啡的强劲提神效果。",
+                    "来一杯意式浓缩，不加任何东西。",
+                    "真正的咖啡爱好者只喝意式浓缩。",
+                    "一杯好的意式浓缩应该有完美的咖啡油脂层。",
+                    "意大利人教我欣赏意式浓缩咖啡的精髓。",
+                    "我只喝意式浓缩，最纯粹的咖啡体验。",
+                    "测试咖啡师水平，就是看他的意式浓缩做得怎么样。",
+                    "下午需要一剂咖啡因，意式浓缩最适合。",
+                    "罗马假日的早晨，总是从一杯意式浓缩开始。"
+                ]
+            }
+        };
+
+        // 原料颜色
+        const INGREDIENT_COLORS = {
+            coffee: "#3C2415",
+            milk: "#E8D4BE",
+            water: "#A7C7E7"
+        };
+
+        // 客人头像SVG数据
+        const CUSTOMER_AVATARS = [
+            // 商务人士
+            `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="60" fill="#EFEFEF"/>
+                <circle cx="30" cy="20" r="12" fill="#333"/>
+                <rect x="18" y="25" width="24" height="30" fill="#333"/>
+                <rect x="22" y="25" width="16" height="8" fill="#666"/>
+            </svg>`,
+            
+            // 年轻女性
+            `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="60" fill="#EFEFEF"/>
+                <circle cx="30" cy="20" r="12" fill="#F06292"/>
+                <path d="M18,28 C18,20 42,20 42,28 L42,50 L18,50 Z" fill="#F06292"/>
+                <path d="M30,20 C25,20 22,24 22,28 L38,28 C38,24 35,20 30,20 Z" fill="#E91E63"/>
+            </svg>`,
+            
+            // 老年人
+            `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="60" fill="#EFEFEF"/>
+                <circle cx="30" cy="20" r="12" fill="#CCC"/>
+                <rect x="18" y="25" width="24" height="30" fill="#607D8B"/>
+                <rect x="24" y="25" width="12" height="5" fill="#FFF"/>
+                <path d="M30,30 C28,40 32,40 30,50" stroke="#455A64" stroke-width="2" fill="none"/>
+            </svg>`,
+            
+            // 学生
+            `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="60" fill="#EFEFEF"/>
+                <circle cx="30" cy="20" r="12" fill="#333"/>
+                <rect x="18" y="25" width="24" height="30" fill="#2196F3"/>
+                <rect x="20" y="35" width="20" height="6" fill="#FFF"/>
+            </svg>`,
+            
+            // 艺术家
+            `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="60" fill="#EFEFEF"/>
+                <circle cx="30" cy="20" r="12" fill="#333"/>
+                <rect x="18" y="25" width="24" height="30" fill="#673AB7"/>
+                <ellipse cx="30" cy="15" rx="15" ry="3" fill="#333"/>
+            </svg>`
+        ];
+
+        // 客人评价对白
+        const CUSTOMER_FEEDBACK = {
+            good: [
+                "这杯咖啡太棒了！香醇浓郁，比例刚刚好。",
+                "完美！这就是我想要的味道，你的手艺真不错。",
+                "啊，这杯咖啡让我的一天都明亮起来了。谢谢！",
+                "咖啡的温度和口感都恰到好处，真是享受。",
+                "我得说，这可能是我喝过的最好的咖啡之一。"
+            ],
+            average: [
+                "嗯...还行吧，但似乎比例不太对。",
+                "味道可以接受，但我期待的更好一些。",
+                "不算太差，但也没什么特别的。",
+                "差不多吧，下次可以再调整一下。",
+                "勉强能喝，但离完美还有距离。"
+            ],
+            bad: [
+                "这是什么味道？完全不是我点的咖啡。",
+                "嗯...抱歉，这实在太难喝了。",
+                "比例完全错了，这根本不是我想要的。",
+                "我想你需要重新学习如何制作咖啡...",
+                "啊，太糟糕了，我甚至不想喝第二口。"
+            ]
+        };
+
+        // 游戏状态
+        let gameState = {
+            isPlaying: false,
+            currentOrder: null,
+            currentCustomer: 0,
+            currentCustomerType: 0,
+            maxCustomers: 5,
+            timeLeft: 30,
+            timer: null,
+            cupCapacity: 100, // 定义杯子容量单位
+            currentLayers: [],
+            ingredientHistory: [],
+            scores: [],
+            scoreDetails: {
+                orderAccuracy: 0,
+                proportionAccuracy: 0,
+                timeEfficiency: 0
+            }
+        };
+
+        // DOM 元素
+        const titleScreen = document.getElementById('title-screen');
+        const gameInterface = document.getElementById('game-interface');
+        const resultsScreen = document.getElementById('results-screen');
+        const startBtn = document.getElementById('start-btn');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const recipeHint = document.getElementById('recipe-hint');
+        const timerEl = document.getElementById('timer');
+        const customerCount = document.getElementById('customer-count');
+        const coffeeBtn = document.getElementById('coffee-btn');
+        const milkBtn = document.getElementById('milk-btn');
+        const waterBtn = document.getElementById('water-btn');
+        const finishBtn = document.getElementById('finish-btn');
+        const coffeeCup = document.getElementById('coffee-cup');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const feedbackScore = document.getElementById('feedback-score');
+        const feedbackDetails = document.getElementById('feedback-details');
+        const continueBtn = document.getElementById('continue-btn');
+        const customerAvatar = document.getElementById('customer-avatar');
+        const speechBubble = document.getElementById('speech-bubble');
+
+        // 设置倒入速度（毫秒/百分比）
+        const POURING_SPEEDS = {
+            coffee: 50, // 原来是100ms，提高200%速度变为50ms
+            milk: 33,   // 原来是100ms，提高300%速度变为33ms
+            water: 40   // 原来是100ms，提高250%速度变为40ms
+        };
+
+        // 游戏初始化
+        function initGame() {
+            gameState = {
+                isPlaying: true,
+                currentOrder: null,
+                currentCustomer: 0,
+                currentCustomerType: 0,
+                maxCustomers: 5,
+                timeLeft: 30,
+                timer: null,
+                cupCapacity: 100,
+                currentLayers: [],
+                ingredientHistory: [],
+                scores: [],
+                scoreDetails: {
+                    orderAccuracy: 0,
+                    proportionAccuracy: 0,
+                    timeEfficiency: 0
+                }
+            };
+            
+            resetCup();
+            nextCustomer();
+            
+            // 清除可能存在的旧计时器
+            if (gameState.timer) {
+                clearInterval(gameState.timer);
+            }
+            
+            // 设置新计时器
+            gameState.timer = setInterval(updateTimer, 1000);
+            
+            // 更新界面
+            customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
+        }
+
+        // 更新计时器
+        function updateTimer() {
+            gameState.timeLeft--;
+            timerEl.textContent = `剩余时间: ${gameState.timeLeft}秒`;
+            
+            if (gameState.timeLeft <= 0) {
+                evaluateCoffee(true); // 时间到，强制评估
+            }
+        }
+
+        // 获取下一个随机订单
+        function getRandomOrder() {
+            const recipes = Object.keys(RECIPES);
+            const randomIndex = Math.floor(Math.random() * recipes.length);
+            return RECIPES[recipes[randomIndex]];
+        }
+
+        // 处理下一位客人
+        function nextCustomer() {
+            gameState.currentCustomer++;
+            
+            if (gameState.currentCustomer > gameState.maxCustomers) {
+                endGame();
+                return;
+            }
+            
+            // 重置杯子和计时器
+            resetCup();
+            gameState.timeLeft = 30;
+            timerEl.textContent = `剩余时间: ${gameState.timeLeft}秒`;
+            
+            // 随机选择客人类型
+            gameState.currentCustomerType = Math.floor(Math.random() * CUSTOMER_AVATARS.length);
+            
+            // 设置客人头像
+            customerAvatar.innerHTML = CUSTOMER_AVATARS[gameState.currentCustomerType];
+            
+            // 生成新订单
+            gameState.currentOrder = getRandomOrder();
+            
+            // 更新配方提示
+            recipeHint.textContent = `配方: ${gameState.currentOrder.description}`;
+            
+            // 显示随机点单对白
+            const randomDialogueIndex = Math.floor(Math.random() * gameState.currentOrder.orderDialogues.length);
+            speechBubble.textContent = gameState.currentOrder.orderDialogues[randomDialogueIndex];
+            
+            // 更新客人计数
+            customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
+        }
+
+        // 重置咖啡杯
+        function resetCup() {
+            // 清除杯子中的所有层
+            while (coffeeCup.firstChild) {
+                coffeeCup.removeChild(coffeeCup.firstChild);
+            }
+            
+            gameState.currentLayers = [];
+            gameState.ingredientHistory = [];
+        }
+
+        // 添加原料层
+        function addIngredientLayer(type, height) {
+            const layer = document.createElement('div');
+            layer.className = 'liquid-layer';
+            layer.style.backgroundColor = INGREDIENT_COLORS[type];
+            layer.style.height = `${height}%`;
+            
+            // 计算层的底部位置
+            let bottomPosition = 0;
+            gameState.currentLayers.forEach(existingLayer => {
+                bottomPosition += existingLayer.height;
+            });
+            
+            layer.style.bottom = `${bottomPosition}%`;
+            
+            // 将层添加到杯子中
+            coffeeCup.appendChild(layer);
+            
+            // 更新当前层数组
+            gameState.currentLayers.push({
+                type: type,
+                height: height
+            });
+            
+            // 更新原料历史
+            gameState.ingredientHistory.push({
+                type: type,
+                ratio: height / 100
+            });
+        }
+
+        // 评估咖啡
+        function evaluateCoffee(isTimeout = false) {
+            clearInterval(gameState.timer);
+            
+            // 计算总高度
+            let totalHeight = 0;
+            gameState.currentLayers.forEach(layer => {
+                totalHeight += layer.height;
+            });
+            
+            // 检查杯子是否为空
+            if (totalHeight === 0) {
+                showFeedback("杯子是空的!", 0, "请添加原料后再完成。");
+                return;
+            }
+            
+            // 计算顺序正确性评分
+            let orderScore = calculateOrderScore();
+            
+            // 计算比例误差率评分
+            let proportionScore = calculateProportionScore();
+            
+            // 计算时间评分
+            let timeScore = calculateTimeScore(isTimeout);
+            
+            // 计算总分
+            let totalScore = Math.floor((orderScore + proportionScore + timeScore) / 3);
+            
+            // 存储本次得分
+            gameState.scores.push(totalScore);
+            
+            // 根据总分显示客人评价
+            let feedbackType;
+            if (totalScore >= 70) {
+                feedbackType = "good";
+            } else if (totalScore >= 40) {
+                feedbackType = "average";
+            } else {
+                feedbackType = "bad";
+            }
+            
+            // 随机选择相应类型的评价
+            const feedbackArray = CUSTOMER_FEEDBACK[feedbackType];
+            const randomFeedbackIndex = Math.floor(Math.random() * feedbackArray.length);
+            speechBubble.textContent = feedbackArray[randomFeedbackIndex];
+            
+            // 显示反馈
+            const feedbackMsg = getFeedbackMessage(totalScore);
+            showFeedback(
+                feedbackMsg, 
+                totalScore, 
+                `顺序: ${orderScore}分 | 比例: ${proportionScore}分 | 时间: ${timeScore}分`
+            );
+        }
+
+        // 计算顺序正确性评分
+        function calculateOrderScore() {
+            const expectedOrder = gameState.currentOrder.ingredients;
+            const actualOrder = gameState.ingredientHistory;
+            
+            if (expectedOrder.length !== actualOrder.length) {
+                return 0; // 原料数量不匹配
+            }
+            
+            let correctCount = 0;
+            for (let i = 0; i < expectedOrder.length; i++) {
+                if (expectedOrder[i].type === actualOrder[i].type) {
+                    correctCount++;
+                }
+            }
+            
+            return Math.floor((correctCount / expectedOrder.length) * 100);
+        }
+
+        // 计算比例误差率评分
+        function calculateProportionScore() {
+            const expectedOrder = gameState.currentOrder.ingredients;
+            const actualOrder = gameState.ingredientHistory;
+            
+            if (expectedOrder.length !== actualOrder.length) {
+                return 0; // 原料数量不匹配
+            }
+            
+            let totalError = 0;
+            for (let i = 0; i < expectedOrder.length; i++) {
+                if (expectedOrder[i].type === actualOrder[i].type) {
+                    // 计算比例误差
+                    const error = Math.abs(expectedOrder[i].ratio - actualOrder[i].ratio);
+                    totalError += error;
+                } else {
+                    // 如果类型不匹配，添加最大误差
+                    totalError += 1;
+                }
+            }
+            
+            // 计算平均误差，并转换为得分（误差越小，分数越高）
+            const avgError = totalError / expectedOrder.length;
+            return Math.floor((1 - avgError) * 100);
+        }
+
+        // 计算时间评分
+        function calculateTimeScore(isTimeout) {
+            if (isTimeout) {
+                return 0; // 超时得0分
+            }
+            
+            // 基于剩余时间计算得分，满分30秒
+            const timeFactor = gameState.timeLeft / 30;
+            return Math.floor(timeFactor * 100);
+        }
+
+        // 获取反馈消息
+        function getFeedbackMessage(score) {
+            if (score >= 90) {
+                return "完美！";
+            } else if (score >= 70) {
+                return "很好！";
+            } else if (score >= 50) {
+                return "还不错";
+            } else if (score >= 30) {
+                return "需要改进";
+            } else {
+                return "请继续努力";
+            }
+        }
+
+        // 显示反馈
+        function showFeedback(message, score, details) {
+            feedbackMessage.textContent = message;
+            feedbackScore.textContent = `${score}分`;
+            feedbackDetails.textContent = details;
+            feedbackContainer.style.display = "flex";
+        }
+
+        // 结束游戏
+        function endGame() {
+            gameState.isPlaying = false;
+            clearInterval(gameState.timer);
+            
+            // 计算最终评分
+            const totalScore = gameState.scores.reduce((sum, score) => sum + score, 0);
+            const avgScore = Math.floor(totalScore / gameState.scores.length) || 0;
+            
+            // 计算各项指标的平均分
+            const orderAccuracy = Math.floor(gameState.scores.reduce((sum, score) => sum + score, 0) / gameState.scores.length) || 0;
+            const proportionAccuracy = Math.floor(gameState.scores.reduce((sum, score) => sum + score, 0) / gameState.scores.length) || 0;
+            const timeEfficiency = Math.floor(gameState.scores.reduce((sum, score) => sum + score, 0) / gameState.scores.length) || 0;
+            
+            // 更新结果屏幕
+            document.getElementById('order-accuracy').textContent = `订单准确性: ${orderAccuracy}%`;
+            document.getElementById('proportion-accuracy').textContent = `比例精确度: ${proportionAccuracy}%`;
+            document.getElementById('time-efficiency').textContent = `时间效率: ${timeEfficiency}%`;
+            document.getElementById('total-score').textContent = `总分: ${avgScore}`;
+            
+            // 设置称号
+            let title = "";
+            if (avgScore >= 90) {
+                title = "咖啡大师";
+            } else if (avgScore >= 70) {
+                title = "资深咖啡师";
+            } else if (avgScore >= 50) {
+                title = "咖啡师";
+            } else if (avgScore >= 30) {
+                title = "咖啡学徒";
+            } else {
+                title = "咖啡小白";
+            }
+            document.getElementById('barista-title').textContent = title;
+            
+            // 显示结果屏幕
+            resultsScreen.style.display = "flex";
+        }
+
+        // 事件监听器
+        startBtn.addEventListener('click', () => {
+            titleScreen.style.display = "none";
+            gameInterface.style.display = "flex";
+            initGame();
+        });
+
+        playAgainBtn.addEventListener('click', () => {
+            resultsScreen.style.display = "none";
+            initGame();
+        });
+
+        continueBtn.addEventListener('click', () => {
+            feedbackContainer.style.display = "none";
+            nextCustomer();
+        });
+
+        // 原料按钮事件监听
+        let isPouring = false;
+        let currentIngredient = '';
+        let pouringInterval = null;
+
+        function startPouring(ingredient) {
+            if (gameState.isPlaying && !isPouring) {
+                isPouring = true;
+                currentIngredient = ingredient;
+                
+                // 计算当前高度
+                let currentHeight = 0;
+                gameState.currentLayers.forEach(layer => {
+                    currentHeight += layer.height;
+                });
+                
+                // 如果杯子满了，则不能再倒
+                if (currentHeight >= 100) {
+                    isPouring = false;
+                    return;
+                }
+                
+                // 创建新层
+                const newLayer = document.createElement('div');
+                newLayer.className = 'liquid-layer';
+                newLayer.style.backgroundColor = INGREDIENT_COLORS[ingredient];
+                newLayer.style.height = '0%';
+                newLayer.style.bottom = `${currentHeight}%`;
+                
+                coffeeCup.appendChild(newLayer);
+                
+                // 开始倒入，根据原料类型设置不同的倒入速度
+                let pouringHeight = 0;
+                pouringInterval = setInterval(() => {
+                    // 累计当前高度
+                    let totalHeight = currentHeight + pouringHeight;
+                    
+                    // 如果杯子满了，停止倒入
+                    if (totalHeight >= 100) {
+                        clearInterval(pouringInterval);
+                        isPouring = false;
+                        
+                        // 将最终高度设置为可能的最大值
+                        const finalHeight = 100 - currentHeight;
+                        newLayer.style.height = `${finalHeight}%`;
+                        
+                        // 更新游戏状态
+                        gameState.currentLayers.push({
+                            type: ingredient,
+                            height: finalHeight
+                        });
+                        
+                        gameState.ingredientHistory.push({
+                            type: ingredient,
+                            ratio: finalHeight / 100
+                        });
+                        
+                        return;
+                    }
+                    
+                    // 增加高度
+                    pouringHeight += 1;
+                    newLayer.style.height = `${pouringHeight}%`;
+                    
+                }, POURING_SPEEDS[ingredient]); // 根据原料类型使用不同的倒入速度
+            }
+        }
+
+        function stopPouring() {
+            if (isPouring) {
+                clearInterval(pouringInterval);
+                
+                // 计算当前高度
+                let currentHeight = 0;
+                gameState.currentLayers.forEach(layer => {
+                    currentHeight += layer.height;
+                });
+                
+                // 获取最后一个层的高度
+                const lastLayer = coffeeCup.lastChild;
+                const pouringHeight = parseFloat(lastLayer.style.height);
+                
+                // 更新游戏状态
+                if (pouringHeight > 0) {
+                    gameState.currentLayers.push({
+                        type: currentIngredient,
+                        height: pouringHeight
+                    });
+                    
+                    gameState.ingredientHistory.push({
+                        type: currentIngredient,
+                        ratio: pouringHeight / 100
+                    });
+                }
+                
+                isPouring = false;
+            }
+        }
+
+        // 触摸和鼠标事件
+        coffeeBtn.addEventListener('mousedown', () => startPouring('coffee'));
+        coffeeBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startPouring('coffee');
+        });
+
+        milkBtn.addEventListener('mousedown', () => startPouring('milk'));
+        milkBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startPouring('milk');
+        });
+
+        waterBtn.addEventListener('mousedown', () => startPouring('water'));
+        waterBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startPouring('water');
+        });
+
+        // 全局监听停止倒入事件
+        document.addEventListener('mouseup', stopPouring);
+        document.addEventListener('touchend', stopPouring);
+
+        finishBtn.addEventListener('click', () => {
+            if (gameState.isPlaying) {
+                evaluateCoffee();
+            }
+        });
+    </script>
+
+
+</body></html>
