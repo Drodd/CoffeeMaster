@@ -93,6 +93,26 @@
         
         #timer {
             font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+        
+        #timer-progress {
+            width: 60%;
+            height: 10px;
+            background-color: #8C593A;
+            border-radius: 5px;
+            margin-left: 10px;
+            overflow: hidden;
+        }
+        
+        #timer-bar {
+            height: 100%;
+            background-color: #E3A868;
+            width: 100%;
+            transition: width 1s linear;
         }
         
         #customer-count {
@@ -108,6 +128,44 @@
             padding: 5px;
             font-size: 14px;
             text-align: center;
+        }
+        
+        #all-recipes {
+            background-color: #F5E6D8;
+            border-top: 1px solid #E3A868;
+            border-bottom: 1px solid #E3A868;
+            padding: 8px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .recipe-card {
+            background-color: white;
+            border: 1px solid #E3A868;
+            border-radius: 5px;
+            padding: 5px 8px;
+            margin-right: 8px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .recipe-card:last-child {
+            margin-right: 0;
+        }
+        
+        .recipe-name {
+            font-weight: bold;
+            color: #6B4226;
+            margin-bottom: 3px;
+            text-align: center;
+        }
+        
+        .recipe-ingredients {
+            color: #8C593A;
+            font-size: 11px;
         }
         
         #customer-interaction {
@@ -140,6 +198,7 @@
             font-size: 14px;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
             position: relative;
+            min-height: 60px; /* Ensure consistent height during typing animation */
         }
         
         #speech-bubble:before {
@@ -161,6 +220,7 @@
             align-items: flex-end;
             padding-bottom: 20px;
             background-color: #F5E6D8;
+            overflow: hidden;
         }
         
         #coffee-cup {
@@ -171,6 +231,69 @@
             position: relative;
             border: 5px solid #DDD;
             overflow: hidden;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        /* 添加不同尺寸的咖啡杯样式 */
+        .cup-small {
+            width: 160px !important;
+            height: 120px !important;
+        }
+        
+        .cup-medium {
+            width: 160px !important;
+            height: 180px !important;
+        }
+        
+        .cup-large {
+            width: 160px !important;
+            height: 240px !important;
+        }
+        
+        /* 添加容量指示器 */
+        .capacity-indicator {
+            position: absolute;
+            right: -40px;
+            height: 100%;
+            width: 10px;
+            background-color: #DDD;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .capacity-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #E3A868;
+            transition: height 0.3s ease;
+        }
+        
+        .capacity-marker {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #6B4226;
+            left: 0;
+        }
+        
+        .capacity-label {
+            position: absolute;
+            right: -35px;
+            font-size: 10px;
+            color: #6B4226;
+            background-color: #F5E6D8;
+            padding: 1px 3px;
+            border-radius: 2px;
+            transform: translateY(-50%);
+        }
+        
+        .cup-enter {
+            transform: translateX(-100vw);
+        }
+        
+        .cup-exit {
+            transform: translateX(100vw);
         }
         
         .liquid-layer {
@@ -180,6 +303,20 @@
             width: 100%;
             height: 0;
             transition: height 0.1s linear;
+        }
+        
+        #overflow-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            z-index: 10;
         }
         
         #control-panel {
@@ -357,6 +494,91 @@
             cursor: pointer;
             font-weight: bold;
         }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        /* Add styles for the title progression chart */
+        #title-chart {
+            width: 90%;
+            max-width: 400px;
+            height: 40px;
+            background-color: #8C593A;
+            border-radius: 20px;
+            margin: 15px 0 25px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .title-section {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .title-section:last-child {
+            border-right: none;
+        }
+        
+        .title-section.active {
+            background-color: #E3A868;
+            color: #6B4226;
+            font-weight: bold;
+        }
+        
+        .title-section:first-child {
+            border-radius: 20px 0 0 20px;
+        }
+        
+        .title-section:last-child {
+            border-radius: 0 20px 20px 0;
+        }
+        
+        .title-marker {
+            position: absolute;
+            top: -25px;
+            transform: translateX(-50%);
+            color: #F5E6D8;
+            font-size: 12px;
+            text-align: center;
+            width: 80px;
+            left: 50%;
+        }
+        
+        #player-marker {
+            position: absolute;
+            bottom: -15px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 12px solid white;
+            transform: translateX(-50%);
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 14px;
+            background-color: #6B4226;
+            margin-left: 2px;
+            animation: blink 0.7s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -366,13 +588,20 @@
             <p>游戏规则：</p>
             <p>根据客人订单要求，通过精准控制原料顺序、比例和时间，调制出符合标准的咖啡。</p>
             <p>长按原料按键注入，松开停止。点击完成按钮结束调制。</p>
+            <p>所有咖啡配方将常驻显示，请根据客人对话内容判断所需咖啡类型。</p>
+            <p>注意：原料总量超过100%会导致咖啡溢出，立即失败！</p>
             <p>每局需要调制5位客人的咖啡，根据顺序正确性、比例误差率、完成速度进行评分。</p>
             <button id="start-btn">开始游戏</button>
         </div>
         
         <div id="game-interface">
             <div id="info-panel">
-                <div id="timer">剩余时间: 30秒</div>
+                <div id="timer">
+                    剩余时间: <span id="timer-text">30</span>秒
+                    <div id="timer-progress">
+                        <div id="timer-bar"></div>
+                    </div>
+                </div>
                 <div id="customer-count">客人: 0/5</div>
             </div>
             
@@ -387,7 +616,12 @@
             
             <div id="recipe-hint"></div>
             
+            <div id="all-recipes">
+                <!-- 所有咖啡配方会在这里显示 -->
+            </div>
+            
             <div id="coffee-display">
+                <div id="overflow-message">咖啡溢出!</div>
                 <div id="coffee-cup">
                     <!-- 液体层会在这里动态生成 -->
                 </div>
@@ -417,6 +651,27 @@
             <div id="time-efficiency" class="score-detail">时间效率: 0%</div>
             <div id="total-score">总分: 0</div>
             <div id="barista-title">咖啡学徒</div>
+            
+            <!-- Add title progression chart -->
+            <div id="title-chart">
+                <div class="title-section" id="title-section-1">
+                    <div class="title-marker">咖啡小白<br>0-149</div>
+                </div>
+                <div class="title-section" id="title-section-2">
+                    <div class="title-marker">咖啡学徒<br>150-249</div>
+                </div>
+                <div class="title-section" id="title-section-3">
+                    <div class="title-marker">咖啡师<br>250-349</div>
+                </div>
+                <div class="title-section" id="title-section-4">
+                    <div class="title-marker">资深咖啡师<br>350-449</div>
+                </div>
+                <div class="title-section" id="title-section-5">
+                    <div class="title-marker">咖啡大师<br>450+</div>
+                </div>
+                <div id="player-marker"></div>
+            </div>
+            
             <button id="play-again-btn">再来一局</button>
         </div>
     </div>
@@ -579,6 +834,18 @@
                 "比例完全错了，这根本不是我想要的。",
                 "我想你需要重新学习如何制作咖啡...",
                 "啊，太糟糕了，我甚至不想喝第二口。"
+            ],
+            overflow: [
+                // 商务人士 - 0
+                "这太不专业了！我要投诉给你们经理。",
+                // 年轻女性 - 1
+                "啊！我的新衣服！这下可怎么办...",
+                // 老年人 - 2
+                "哎呀！年轻人做事怎么这么毛躁？",
+                // 学生 - 3
+                "哇！好刺激！不过我的笔记本都湿了...",
+                // 艺术家 - 4
+                "嗯...这倒是一种有趣的艺术表现形式，但不是我要的咖啡。"
             ]
         };
 
@@ -595,6 +862,12 @@
             currentLayers: [],
             ingredientHistory: [],
             scores: [],
+            currentCupSize: 'medium', // 当前杯子尺寸
+            cupSizeCapacity: {
+                small: 30,  // 小杯容量为30%
+                medium: 60, // 中杯容量为60%
+                large: 100  // 大杯容量为100%
+            },
             scoreDetails: {
                 orderAccuracy: 0,
                 proportionAccuracy: 0,
@@ -626,10 +899,34 @@
 
         // 设置倒入速度（毫秒/百分比）
         const POURING_SPEEDS = {
-            coffee: 50, // 原来是100ms，提高200%速度变为50ms
-            milk: 33,   // 原来是100ms，提高300%速度变为33ms
-            water: 40   // 原来是100ms，提高250%速度变为40ms
+            coffee: 50, // 每50毫秒增加1%高度
+            milk: 20,   // 每20毫秒增加1%高度
+            water: 10   // 每10毫秒增加1%高度
         };
+
+        // 显示所有配方
+        function displayAllRecipes() {
+            const allRecipesContainer = document.getElementById('all-recipes');
+            allRecipesContainer.innerHTML = '';
+            
+            for (const key in RECIPES) {
+                const recipe = RECIPES[key];
+                const recipeCard = document.createElement('div');
+                recipeCard.className = 'recipe-card';
+                
+                const recipeName = document.createElement('div');
+                recipeName.className = 'recipe-name';
+                recipeName.textContent = recipe.name;
+                
+                const recipeIngredients = document.createElement('div');
+                recipeIngredients.className = 'recipe-ingredients';
+                recipeIngredients.textContent = recipe.description;
+                
+                recipeCard.appendChild(recipeName);
+                recipeCard.appendChild(recipeIngredients);
+                allRecipesContainer.appendChild(recipeCard);
+            }
+        }
 
         // 游戏初始化
         function initGame() {
@@ -645,6 +942,12 @@
                 currentLayers: [],
                 ingredientHistory: [],
                 scores: [],
+                currentCupSize: 'medium', // 默认中杯
+                cupSizeCapacity: {
+                    small: 30,  // 小杯容量为30%
+                    medium: 60, // 中杯容量为60%
+                    large: 100  // 大杯容量为100%
+                },
                 scoreDetails: {
                     orderAccuracy: 0,
                     proportionAccuracy: 0,
@@ -652,25 +955,54 @@
                 }
             };
             
+            // 显示所有配方
+            displayAllRecipes();
+            
+            // 重置杯子
             resetCup();
-            nextCustomer();
             
-            // 清除可能存在的旧计时器
-            if (gameState.timer) {
-                clearInterval(gameState.timer);
-            }
+            // 设置杯子初始位置在屏幕外
+            const coffeeCup = document.getElementById('coffee-cup');
+            coffeeCup.classList.add('cup-enter');
             
-            // 设置新计时器
-            gameState.timer = setInterval(updateTimer, 1000);
-            
-            // 更新界面
-            customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
+            // 短暂延迟后开始游戏并移除入场动画类
+            setTimeout(() => {
+                coffeeCup.classList.remove('cup-enter');
+                nextCustomer();
+                
+                // 清除可能存在的旧计时器
+                if (gameState.timer) {
+                    clearInterval(gameState.timer);
+                }
+                
+                // 设置新计时器
+                gameState.timer = setInterval(updateTimer, 1000);
+                
+                // 更新界面
+                customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
+                
+                // 重置进度条
+                document.getElementById('timer-bar').style.width = '100%';
+            }, 50);
         }
 
         // 更新计时器
         function updateTimer() {
             gameState.timeLeft--;
-            timerEl.textContent = `剩余时间: ${gameState.timeLeft}秒`;
+            const timerText = document.getElementById('timer-text');
+            timerText.textContent = gameState.timeLeft;
+            
+            // 更新进度条
+            const timerBar = document.getElementById('timer-bar');
+            const percentage = (gameState.timeLeft / 30) * 100;
+            timerBar.style.width = `${percentage}%`;
+            
+            // 当时间少于10秒时，进度条变红
+            if (gameState.timeLeft <= 10) {
+                timerBar.style.backgroundColor = '#FF5252';
+            } else {
+                timerBar.style.backgroundColor = '#E3A868';
+            }
             
             if (gameState.timeLeft <= 0) {
                 evaluateCoffee(true); // 时间到，强制评估
@@ -684,6 +1016,30 @@
             return RECIPES[recipes[randomIndex]];
         }
 
+        // 显示随机点单对白
+        function displayDialogue(text) {
+            const speechBubble = document.getElementById('speech-bubble');
+            speechBubble.innerHTML = ''; // Clear previous text
+            
+            const cursor = document.createElement('span');
+            cursor.className = 'typing-cursor';
+            speechBubble.appendChild(cursor);
+            
+            let i = 0;
+            const typingSpeed = 50; // milliseconds per character
+            
+            function typeNextChar() {
+                if (i < text.length) {
+                    // Insert the character before the cursor
+                    speechBubble.insertBefore(document.createTextNode(text.charAt(i)), cursor);
+                    i++;
+                    setTimeout(typeNextChar, typingSpeed);
+                }
+            }
+            
+            typeNextChar();
+        }
+
         // 处理下一位客人
         function nextCustomer() {
             gameState.currentCustomer++;
@@ -693,29 +1049,142 @@
                 return;
             }
             
-            // 重置杯子和计时器
-            resetCup();
-            gameState.timeLeft = 30;
-            timerEl.textContent = `剩余时间: ${gameState.timeLeft}秒`;
+            // 先让当前杯子滑出
+            const coffeeCup = document.getElementById('coffee-cup');
+            coffeeCup.classList.add('cup-exit');
             
-            // 随机选择客人类型
-            gameState.currentCustomerType = Math.floor(Math.random() * CUSTOMER_AVATARS.length);
+            // 延迟重置杯子和设置新客人
+            setTimeout(() => {
+                // 重置杯子和计时器
+                resetCup();
+                gameState.timeLeft = 30;
+                document.getElementById('timer-text').textContent = gameState.timeLeft;
+                
+                // 重置进度条
+                const timerBar = document.getElementById('timer-bar');
+                timerBar.style.width = '100%';
+                timerBar.style.backgroundColor = '#E3A868';
+                
+                // 清除旧计时器并设置新计时器
+                if (gameState.timer) {
+                    clearInterval(gameState.timer);
+                }
+                gameState.timer = setInterval(updateTimer, 1000);
+                
+                // 随机选择客人类型
+                gameState.currentCustomerType = Math.floor(Math.random() * CUSTOMER_AVATARS.length);
+                
+                // 设置客人头像
+                customerAvatar.innerHTML = CUSTOMER_AVATARS[gameState.currentCustomerType];
+                
+                // 生成新订单
+                gameState.currentOrder = getRandomOrder();
+                
+                // 随机选择杯子尺寸
+                const cupSizes = ['small', 'medium', 'large'];
+                gameState.currentCupSize = cupSizes[Math.floor(Math.random() * cupSizes.length)];
+                
+                // 应用杯子尺寸 - 确保清除所有类并正确应用新类
+                coffeeCup.className = ''; // 清除所有类
+                coffeeCup.removeAttribute('style'); // 移除可能的内联样式
+                coffeeCup.classList.add(`cup-${gameState.currentCupSize}`);
+                
+                // 添加容量指示器
+                addCapacityIndicator(coffeeCup, gameState.cupSizeCapacity[gameState.currentCupSize]);
+                
+                // 更新配方提示 - 添加杯子尺寸提示
+                let cupSizeText = '';
+                switch(gameState.currentCupSize) {
+                    case 'small':
+                        cupSizeText = '小杯 (30%)';
+                        break;
+                    case 'medium':
+                        cupSizeText = '中杯 (60%)';
+                        break;
+                    case 'large':
+                        cupSizeText = '大杯 (100%)';
+                        break;
+                }
+                recipeHint.textContent = `新订单已到达 (${cupSizeText})，请仔细听取客人需求`;
+                
+                // 显示随机点单对白，使用打字效果
+                const randomDialogueIndex = Math.floor(Math.random() * gameState.currentOrder.orderDialogues.length);
+                displayDialogue(gameState.currentOrder.orderDialogues[randomDialogueIndex]);
+                
+                // 更新客人计数
+                customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
+                
+                // 隐藏溢出提示
+                document.getElementById('overflow-message').style.display = 'none';
+                
+                // 让新杯子从左侧滑入
+                coffeeCup.classList.add('cup-enter');
+                
+                // 短暂延迟后移除入场动画类
+                setTimeout(() => {
+                    coffeeCup.classList.remove('cup-enter');
+                    
+                    // 确保杯子尺寸类仍然存在
+                    if (!coffeeCup.classList.contains(`cup-${gameState.currentCupSize}`)) {
+                        coffeeCup.classList.add(`cup-${gameState.currentCupSize}`);
+                    }
+                }, 500); // 增加延迟时间，使动画更明显
+            }, 500); // 等待杯子滑出动画完成
+        }
+
+        // 添加容量指示器
+        function addCapacityIndicator(cup, capacity) {
+            // 创建容量指示器容器
+            const indicator = document.createElement('div');
+            indicator.className = 'capacity-indicator';
             
-            // 设置客人头像
-            customerAvatar.innerHTML = CUSTOMER_AVATARS[gameState.currentCustomerType];
+            // 创建填充条
+            const fill = document.createElement('div');
+            fill.className = 'capacity-fill';
+            fill.style.height = '0%';
+            indicator.appendChild(fill);
             
-            // 生成新订单
-            gameState.currentOrder = getRandomOrder();
+            // 添加100%标记
+            const marker100 = document.createElement('div');
+            marker100.className = 'capacity-marker';
+            marker100.style.bottom = '100%';
+            indicator.appendChild(marker100);
             
-            // 更新配方提示
-            recipeHint.textContent = `配方: ${gameState.currentOrder.description}`;
+            const label100 = document.createElement('div');
+            label100.className = 'capacity-label';
+            label100.textContent = '100%';
+            label100.style.bottom = '100%';
+            indicator.appendChild(label100);
             
-            // 显示随机点单对白
-            const randomDialogueIndex = Math.floor(Math.random() * gameState.currentOrder.orderDialogues.length);
-            speechBubble.textContent = gameState.currentOrder.orderDialogues[randomDialogueIndex];
+            // 添加当前杯子容量标记
+            if (capacity < 100) {
+                const markerCapacity = document.createElement('div');
+                markerCapacity.className = 'capacity-marker';
+                markerCapacity.style.bottom = `${capacity}%`;
+                indicator.appendChild(markerCapacity);
+                
+                const labelCapacity = document.createElement('div');
+                labelCapacity.className = 'capacity-label';
+                labelCapacity.textContent = `${capacity}%`;
+                labelCapacity.style.bottom = `${capacity}%`;
+                indicator.appendChild(labelCapacity);
+            }
             
-            // 更新客人计数
-            customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
+            // 将指示器添加到杯子旁边
+            cup.parentNode.appendChild(indicator);
+        }
+        
+        // 更新容量指示器
+        function updateCapacityIndicator(height) {
+            const indicator = document.querySelector('.capacity-fill');
+            if (indicator) {
+                // 计算填充百分比 - 基于当前杯子容量
+                const currentCapacity = gameState.cupSizeCapacity[gameState.currentCupSize];
+                const fillPercentage = (height / currentCapacity) * 100;
+                // 限制最大值为100%
+                const cappedPercentage = Math.min(fillPercentage, 100);
+                indicator.style.height = `${cappedPercentage}%`;
+            }
         }
 
         // 重置咖啡杯
@@ -725,16 +1194,31 @@
                 coffeeCup.removeChild(coffeeCup.firstChild);
             }
             
+            // 移除容量指示器
+            const indicator = document.querySelector('.capacity-indicator');
+            if (indicator) {
+                indicator.parentNode.removeChild(indicator);
+            }
+            
+            // 重置杯子动画和样式，但保留尺寸类
+            coffeeCup.style.animation = '';
+            
             gameState.currentLayers = [];
             gameState.ingredientHistory = [];
         }
 
         // 添加原料层
         function addIngredientLayer(type, height) {
+            // 获取当前杯子的容量上限
+            const currentCapacity = gameState.cupSizeCapacity[gameState.currentCupSize];
+            
             const layer = document.createElement('div');
             layer.className = 'liquid-layer';
             layer.style.backgroundColor = INGREDIENT_COLORS[type];
-            layer.style.height = `${height}%`;
+            
+            // 将实际高度映射到视觉高度
+            const visualHeight = (height / currentCapacity) * 100;
+            layer.style.height = `${visualHeight}%`;
             
             // 计算层的底部位置
             let bottomPosition = 0;
@@ -742,7 +1226,9 @@
                 bottomPosition += existingLayer.height;
             });
             
-            layer.style.bottom = `${bottomPosition}%`;
+            // 将实际底部位置映射到视觉底部位置
+            const visualBottom = (bottomPosition / currentCapacity) * 100;
+            layer.style.bottom = `${visualBottom}%`;
             
             // 将层添加到杯子中
             coffeeCup.appendChild(layer);
@@ -788,8 +1274,13 @@
             // 计算总分
             let totalScore = Math.floor((orderScore + proportionScore + timeScore) / 3);
             
-            // 存储本次得分
-            gameState.scores.push(totalScore);
+            // 存储本次得分和各项指标得分
+            gameState.scores.push({
+                total: totalScore,
+                order: orderScore,
+                proportion: proportionScore,
+                time: timeScore
+            });
             
             // 根据总分显示客人评价
             let feedbackType;
@@ -801,10 +1292,10 @@
                 feedbackType = "bad";
             }
             
-            // 随机选择相应类型的评价
+            // 随机选择相应类型的评价，并使用打字效果显示
             const feedbackArray = CUSTOMER_FEEDBACK[feedbackType];
             const randomFeedbackIndex = Math.floor(Math.random() * feedbackArray.length);
-            speechBubble.textContent = feedbackArray[randomFeedbackIndex];
+            displayDialogue(feedbackArray[randomFeedbackIndex]);
             
             // 显示反馈
             const feedbackMsg = getFeedbackMessage(totalScore);
@@ -820,13 +1311,64 @@
             const expectedOrder = gameState.currentOrder.ingredients;
             const actualOrder = gameState.ingredientHistory;
             
-            if (expectedOrder.length !== actualOrder.length) {
-                return 0; // 原料数量不匹配
+            // 如果没有添加任何原料，得分为0
+            if (actualOrder.length === 0) {
+                return 0;
             }
             
+            // 检查是否使用了所有必需的原料类型
+            const expectedTypes = new Set();
+            for (const item of expectedOrder) {
+                expectedTypes.add(item.type);
+            }
+            
+            const actualTypes = new Set();
+            for (const item of actualOrder) {
+                actualTypes.add(item.type);
+            }
+            
+            // 检查是否所有期望的类型都被使用了
+            for (const type of expectedTypes) {
+                if (!actualTypes.has(type)) {
+                    return 0; // 缺少必需的原料类型
+                }
+            }
+            
+            // 检查是否使用了额外的原料类型
+            for (const type of actualTypes) {
+                if (!expectedTypes.has(type)) {
+                    return 0; // 使用了不需要的原料类型
+                }
+            }
+            
+            // 合并连续的相同类型原料
+            const mergedActualOrder = [];
+            let currentType = actualOrder[0].type;
+            let currentRatio = actualOrder[0].ratio;
+            
+            for (let i = 1; i < actualOrder.length; i++) {
+                if (actualOrder[i].type === currentType) {
+                    // 如果类型相同，合并比例
+                    currentRatio += actualOrder[i].ratio;
+                } else {
+                    // 如果类型不同，添加之前的合并结果并开始新的合并
+                    mergedActualOrder.push({ type: currentType, ratio: currentRatio });
+                    currentType = actualOrder[i].type;
+                    currentRatio = actualOrder[i].ratio;
+                }
+            }
+            // 添加最后一个合并结果
+            mergedActualOrder.push({ type: currentType, ratio: currentRatio });
+            
+            // 如果合并后的原料数量与期望不符，得分降低但不为0
+            if (mergedActualOrder.length !== expectedOrder.length) {
+                return Math.max(30, 100 - Math.abs(mergedActualOrder.length - expectedOrder.length) * 20);
+            }
+            
+            // 计算顺序正确性
             let correctCount = 0;
             for (let i = 0; i < expectedOrder.length; i++) {
-                if (expectedOrder[i].type === actualOrder[i].type) {
+                if (expectedOrder[i].type === mergedActualOrder[i].type) {
                     correctCount++;
                 }
             }
@@ -839,25 +1381,105 @@
             const expectedOrder = gameState.currentOrder.ingredients;
             const actualOrder = gameState.ingredientHistory;
             
-            if (expectedOrder.length !== actualOrder.length) {
-                return 0; // 原料数量不匹配
+            // 如果没有添加任何原料，得分为0
+            if (actualOrder.length === 0) {
+                return 0;
             }
             
-            let totalError = 0;
+            // 获取当前杯子的容量
+            const currentCapacity = gameState.cupSizeCapacity[gameState.currentCupSize];
+            
+            // 计算配方的总比例（有些配方如意式浓缩可能不是100%）
+            let recipeTotal = 0;
+            for (const item of expectedOrder) {
+                recipeTotal += item.ratio;
+            }
+            
+            // 根据杯子容量调整期望的配方比例
+            const scaleFactor = currentCapacity / 100;
+            
+            // 合并相同类型的原料
+            const mergedActualOrder = [];
+            const typesUsed = new Set();
+            
             for (let i = 0; i < expectedOrder.length; i++) {
-                if (expectedOrder[i].type === actualOrder[i].type) {
-                    // 计算比例误差
-                    const error = Math.abs(expectedOrder[i].ratio - actualOrder[i].ratio);
-                    totalError += error;
-                } else {
-                    // 如果类型不匹配，添加最大误差
-                    totalError += 1;
+                const expectedType = expectedOrder[i].type;
+                
+                // 如果这个类型已经处理过，跳过
+                if (typesUsed.has(expectedType)) continue;
+                
+                // 标记这个类型已处理
+                typesUsed.add(expectedType);
+                
+                // 计算实际使用的该类型原料总比例
+                let actualRatio = 0;
+                for (let j = 0; j < actualOrder.length; j++) {
+                    if (actualOrder[j].type === expectedType) {
+                        actualRatio += actualOrder[j].ratio;
+                    }
+                }
+                
+                // 计算期望的该类型原料总比例（根据杯子容量调整）
+                let expectedRatio = 0;
+                for (let j = 0; j < expectedOrder.length; j++) {
+                    if (expectedOrder[j].type === expectedType) {
+                        expectedRatio += expectedOrder[j].ratio * scaleFactor;
+                    }
+                }
+                
+                // 添加到合并后的数组
+                mergedActualOrder.push({
+                    type: expectedType,
+                    ratio: actualRatio,
+                    expectedRatio: expectedRatio
+                });
+            }
+            
+            // 检查是否有多余的原料类型（不在配方中）
+            const expectedTypes = new Set();
+            for (const item of expectedOrder) {
+                expectedTypes.add(item.type);
+            }
+            
+            for (const item of actualOrder) {
+                if (!expectedTypes.has(item.type)) {
+                    // 如果使用了配方中没有的原料，得分为0
+                    return 0;
                 }
             }
             
+            // 计算总实际比例（用于归一化）
+            let totalActualRatio = 0;
+            for (const item of mergedActualOrder) {
+                totalActualRatio += item.ratio;
+            }
+            
+            // 计算比例误差（如果总比例不为1，进行归一化）
+            let totalError = 0;
+            if (totalActualRatio > 0) {
+                // 对于不是100%填满的配方（如意式浓缩），检查是否在合理范围内
+                const adjustedRecipeTotal = recipeTotal * scaleFactor;
+                if (Math.abs(totalActualRatio - adjustedRecipeTotal) > 0.1) {
+                    // 如果总量差异太大，降低得分但不为0
+                    const volumeError = Math.min(0.5, Math.abs(totalActualRatio - adjustedRecipeTotal) / adjustedRecipeTotal);
+                    totalError += volumeError;
+                }
+                
+                for (const item of mergedActualOrder) {
+                    // 归一化实际比例（根据配方总比例）
+                    const normalizedRatio = (item.ratio / totalActualRatio) * adjustedRecipeTotal;
+                    const error = Math.abs(item.expectedRatio - normalizedRatio);
+                    totalError += error;
+                }
+                
+                // 平均误差（考虑了配方总量和各成分比例）
+                totalError = totalError / (mergedActualOrder.length + 1);
+            } else {
+                return 0; // 如果总比例为0，得分为0
+            }
+            
             // 计算平均误差，并转换为得分（误差越小，分数越高）
-            const avgError = totalError / expectedOrder.length;
-            return Math.floor((1 - avgError) * 100);
+            return Math.floor((1 - totalError) * 100);
         }
 
         // 计算时间评分
@@ -899,35 +1521,82 @@
             gameState.isPlaying = false;
             clearInterval(gameState.timer);
             
-            // 计算最终评分
-            const totalScore = gameState.scores.reduce((sum, score) => sum + score, 0);
+            // 计算总分（所有客人得分的总和）
+            const totalScore = gameState.scores.reduce((sum, score) => sum + score.total, 0);
+            
+            // 计算平均分（用于称号判断）
             const avgScore = Math.floor(totalScore / gameState.scores.length) || 0;
             
             // 计算各项指标的平均分
-            const orderAccuracy = Math.floor(gameState.scores.reduce((sum, score) => sum + score, 0) / gameState.scores.length) || 0;
-            const proportionAccuracy = Math.floor(gameState.scores.reduce((sum, score) => sum + score, 0) / gameState.scores.length) || 0;
-            const timeEfficiency = Math.floor(gameState.scores.reduce((sum, score) => sum + score, 0) / gameState.scores.length) || 0;
+            const orderAccuracy = Math.floor(gameState.scores.reduce((sum, score) => sum + score.order, 0) / gameState.scores.length) || 0;
+            const proportionAccuracy = Math.floor(gameState.scores.reduce((sum, score) => sum + score.proportion, 0) / gameState.scores.length) || 0;
+            const timeEfficiency = Math.floor(gameState.scores.reduce((sum, score) => sum + score.time, 0) / gameState.scores.length) || 0;
             
             // 更新结果屏幕
             document.getElementById('order-accuracy').textContent = `订单准确性: ${orderAccuracy}%`;
             document.getElementById('proportion-accuracy').textContent = `比例精确度: ${proportionAccuracy}%`;
             document.getElementById('time-efficiency').textContent = `时间效率: ${timeEfficiency}%`;
-            document.getElementById('total-score').textContent = `总分: ${avgScore}`;
+            document.getElementById('total-score').textContent = `总分: ${totalScore}`;
             
-            // 设置称号
+            // 设置称号（基于总分而非平均分）
             let title = "";
-            if (avgScore >= 90) {
+            let titleSection = 1; // 默认为第一个称号
+            
+            if (totalScore >= 450) {
                 title = "咖啡大师";
-            } else if (avgScore >= 70) {
+                titleSection = 5;
+            } else if (totalScore >= 350) {
                 title = "资深咖啡师";
-            } else if (avgScore >= 50) {
+                titleSection = 4;
+            } else if (totalScore >= 250) {
                 title = "咖啡师";
-            } else if (avgScore >= 30) {
+                titleSection = 3;
+            } else if (totalScore >= 150) {
                 title = "咖啡学徒";
+                titleSection = 2;
             } else {
                 title = "咖啡小白";
+                titleSection = 1;
             }
+            
             document.getElementById('barista-title').textContent = title;
+            
+            // 清除所有section的active类
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`title-section-${i}`).classList.remove('active');
+            }
+            
+            // 高亮当前称号
+            document.getElementById(`title-section-${titleSection}`).classList.add('active');
+            
+            // 更精确地设置玩家标记位置
+            let markerPosition;
+            
+            if (totalScore < 150) {
+                // 0-149分范围内的线性映射
+                const percentage = totalScore / 150;
+                markerPosition = 10 + percentage * 20;
+            } else if (totalScore < 250) {
+                // 150-249分范围内的线性映射
+                const percentage = (totalScore - 150) / 100;
+                markerPosition = 30 + percentage * 20;
+            } else if (totalScore < 350) {
+                // 250-349分范围内的线性映射
+                const percentage = (totalScore - 250) / 100;
+                markerPosition = 50 + percentage * 20;
+            } else if (totalScore < 450) {
+                // 350-449分范围内的线性映射
+                const percentage = (totalScore - 350) / 100;
+                markerPosition = 70 + percentage * 20;
+            } else {
+                // 450分以上
+                const percentage = Math.min((totalScore - 450) / 50, 1);
+                markerPosition = 90 + percentage * 10;
+                markerPosition = Math.min(markerPosition, 99); // 最高不超过99%
+            }
+            
+            // 设置玩家标记位置
+            document.getElementById('player-marker').style.left = `${markerPosition}%`;
             
             // 显示结果屏幕
             resultsScreen.style.display = "flex";
@@ -966,8 +1635,11 @@
                     currentHeight += layer.height;
                 });
                 
+                // 获取当前杯子的容量上限
+                const currentCapacity = gameState.cupSizeCapacity[gameState.currentCupSize];
+                
                 // 如果杯子满了，则不能再倒
-                if (currentHeight >= 100) {
+                if (currentHeight >= currentCapacity) {
                     isPouring = false;
                     return;
                 }
@@ -977,7 +1649,12 @@
                 newLayer.className = 'liquid-layer';
                 newLayer.style.backgroundColor = INGREDIENT_COLORS[ingredient];
                 newLayer.style.height = '0%';
-                newLayer.style.bottom = `${currentHeight}%`;
+                
+                // 计算视觉上的底部位置 - 将实际高度映射到视觉高度
+                const visualBottom = (currentHeight / currentCapacity) * 100;
+                newLayer.style.bottom = `${visualBottom}%`;
+                
+                newLayer.dataset.pouring = 'true'; // 标记为正在倒入的层
                 
                 coffeeCup.appendChild(newLayer);
                 
@@ -987,32 +1664,39 @@
                     // 累计当前高度
                     let totalHeight = currentHeight + pouringHeight;
                     
-                    // 如果杯子满了，停止倒入
-                    if (totalHeight >= 100) {
+                    // 更新容量指示器
+                    updateCapacityIndicator(totalHeight);
+                    
+                    // 如果杯子满了，触发溢出事件
+                    if (totalHeight >= currentCapacity) {
                         clearInterval(pouringInterval);
                         isPouring = false;
                         
-                        // 将最终高度设置为可能的最大值
-                        const finalHeight = 100 - currentHeight;
-                        newLayer.style.height = `${finalHeight}%`;
+                        // 计算视觉上的最终高度 - 将实际高度映射到视觉高度
+                        const visualFinalHeight = ((currentCapacity - currentHeight) / currentCapacity) * 100;
+                        newLayer.style.height = `${visualFinalHeight}%`;
+                        newLayer.dataset.pouring = 'false';
                         
                         // 更新游戏状态
                         gameState.currentLayers.push({
                             type: ingredient,
-                            height: finalHeight
+                            height: currentCapacity - currentHeight
                         });
                         
                         gameState.ingredientHistory.push({
                             type: ingredient,
-                            ratio: finalHeight / 100
+                            ratio: (currentCapacity - currentHeight) / 100
                         });
                         
+                        // 触发溢出事件
+                        handleCoffeeOverflow();
                         return;
                     }
                     
-                    // 增加高度
+                    // 增加高度，并映射到视觉高度
                     pouringHeight += 1;
-                    newLayer.style.height = `${pouringHeight}%`;
+                    const visualHeight = (pouringHeight / currentCapacity) * 100;
+                    newLayer.style.height = `${visualHeight}%`;
                     
                 }, POURING_SPEEDS[ingredient]); // 根据原料类型使用不同的倒入速度
             }
@@ -1022,27 +1706,42 @@
             if (isPouring) {
                 clearInterval(pouringInterval);
                 
-                // 计算当前高度
+                // 计算当前高度（不包括正在倒的层）
                 let currentHeight = 0;
                 gameState.currentLayers.forEach(layer => {
                     currentHeight += layer.height;
                 });
                 
-                // 获取最后一个层的高度
-                const lastLayer = coffeeCup.lastChild;
-                const pouringHeight = parseFloat(lastLayer.style.height);
+                // 获取当前杯子的容量上限
+                const currentCapacity = gameState.cupSizeCapacity[gameState.currentCupSize];
                 
-                // 更新游戏状态
-                if (pouringHeight > 0) {
-                    gameState.currentLayers.push({
-                        type: currentIngredient,
-                        height: pouringHeight
-                    });
+                // 获取最后一个层的高度（正在倒入的层）
+                const lastLayer = coffeeCup.lastChild;
+                if (lastLayer && lastLayer.dataset.pouring === 'true') {
+                    // 从视觉高度转换回实际高度
+                    const visualHeight = parseFloat(lastLayer.style.height);
+                    const actualHeight = (visualHeight / 100) * currentCapacity;
                     
-                    gameState.ingredientHistory.push({
-                        type: currentIngredient,
-                        ratio: pouringHeight / 100
-                    });
+                    lastLayer.dataset.pouring = 'false'; // 标记为已完成倒入
+                    
+                    // 更新游戏状态
+                    if (actualHeight > 0) {
+                        gameState.currentLayers.push({
+                            type: currentIngredient,
+                            height: actualHeight
+                        });
+                        
+                        gameState.ingredientHistory.push({
+                            type: currentIngredient,
+                            ratio: actualHeight / 100
+                        });
+                        
+                        // 更新容量指示器
+                        updateCapacityIndicator(currentHeight + actualHeight);
+                    } else {
+                        // 如果高度为0，移除这个层
+                        coffeeCup.removeChild(lastLayer);
+                    }
                 }
                 
                 isPouring = false;
@@ -1077,6 +1776,50 @@
                 evaluateCoffee();
             }
         });
+
+        // 处理咖啡溢出
+        function handleCoffeeOverflow() {
+            clearInterval(pouringInterval);
+            clearInterval(gameState.timer);
+            isPouring = false;
+            
+            // 显示溢出提示
+            const overflowMessage = document.getElementById('overflow-message');
+            overflowMessage.style.display = 'block';
+            
+            // 添加溢出动画效果，但不影响杯子尺寸
+            const coffeeCup = document.getElementById('coffee-cup');
+            coffeeCup.style.animation = 'shake 0.5s ease-in-out';
+            
+            // 确保杯子尺寸类仍然存在
+            if (!coffeeCup.classList.contains(`cup-${gameState.currentCupSize}`)) {
+                coffeeCup.classList.add(`cup-${gameState.currentCupSize}`);
+            }
+            
+            // 评分为0
+            const orderScore = 0;
+            const proportionScore = 0;
+            const timeScore = 0;
+            const totalScore = 0;
+            
+            // 存储本次得分
+            gameState.scores.push({
+                total: totalScore,
+                order: orderScore,
+                proportion: proportionScore,
+                time: timeScore
+            });
+            
+            // 根据客人类型显示不同的溢出反馈，使用打字效果
+            const overflowDialogue = CUSTOMER_FEEDBACK.overflow[gameState.currentCustomerType];
+            displayDialogue(overflowDialogue);
+            
+            showFeedback(
+                "咖啡溢出!", 
+                totalScore, 
+                "请注意控制原料总量不超过100%"
+            );
+        }
     </script>
 
 
