@@ -36,6 +36,8 @@
             width: 100%;
             height: 100%;
             background-color: #6B4226;
+            background-image: linear-gradient(45deg, #6B4226 25%, #5A371F 25%, #5A371F 50%, #6B4226 50%, #6B4226 75%, #5A371F 75%, #5A371F 100%);
+            background-size: 56.57px 56.57px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -44,37 +46,119 @@
             color: #F5E6D8;
             text-align: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #title-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(107, 66, 38, 0.95) 100%);
+            z-index: -1;
         }
         
         #title-screen h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 48px;
+            margin-bottom: 40px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            color: #E3A868;
+            position: relative;
+            letter-spacing: 2px;
         }
         
-        #title-screen p {
-            font-size: 16px;
-            margin-bottom: 10px;
-            line-height: 1.4;
+        #title-screen h1::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: #E3A868;
+            margin: 15px auto 0;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .rules-container {
+            background: rgba(227, 168, 104, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 auto 30px;
+            max-width: 80%;
+            border: 1px solid rgba(227, 168, 104, 0.3);
+        }
+        
+        #title-screen .rules-title {
+            font-size: 20px;
+            color: #E3A868;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        #title-screen .rule-item {
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.6;
+            color: rgba(245, 230, 216, 0.9);
+            position: relative;
+            padding-left: 20px;
+            text-align: left;
+        }
+        
+        #title-screen .rule-item::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: #E3A868;
         }
         
         #start-btn {
-            margin-top: 40px;
-            padding: 15px 30px;
-            font-size: 20px;
+            margin-top: 20px;
+            padding: 18px 40px;
+            font-size: 24px;
             background-color: #E3A868;
             color: #6B4226;
             border: none;
-            border-radius: 30px;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transition: 0.5s;
+        }
+        
+        #start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            background-color: #EBB67C;
+        }
+        
+        #start-btn:hover::before {
+            left: 100%;
         }
         
         #start-btn:active {
             transform: translateY(4px);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         #game-interface {
@@ -85,27 +169,30 @@
         
         #info-panel {
             background-color: #6B4226;
+            background-image: linear-gradient(to right, #5A371F, #6B4226, #5A371F);
             color: #F5E6D8;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
             position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         #timer {
-            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 5px;
+            position: relative;
         }
         
         #timer-progress {
-            width: 60%;
-            height: 10px;
-            background-color: #8C593A;
-            border-radius: 5px;
-            margin-left: 10px;
+            width: 80%;
+            height: 24px;
+            background-color: rgba(140, 89, 58, 0.5);
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(227, 168, 104, 0.3);
+            position: relative;
         }
         
         #timer-bar {
@@ -113,43 +200,175 @@
             background-color: #E3A868;
             width: 100%;
             transition: width 1s linear;
+            background-image: linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, 0.2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.2) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 30px 30px;
+            animation: timer-stripe 1s linear infinite;
+        }
+        
+        @keyframes timer-stripe {
+            from { background-position: 0 0; }
+            to { background-position: 30px 0; }
         }
         
         #customer-count {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
             font-size: 14px;
+            color: #6B4226;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 1;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
         }
         
         #recipe-hint {
-            background-color: #E3A868;
+            background-color: #F5E6D8;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 10px 0;
             color: #6B4226;
-            padding: 5px;
             font-size: 14px;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(227, 168, 104, 0.3);
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .recipe-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            line-height: 1.4;
+            width: 100%;
+        }
+        
+        .recipe-item {
+            color: #8C593A;
+            padding: 3px 0;
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px dashed rgba(227, 168, 104, 0.3);
+        }
+        
+        .recipe-item:last-child {
+            border-bottom: none;
+        }
+        
+        @media (max-width: 480px) {
+            .recipe-list {
+                font-size: 11px;
+                gap: 3px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .recipe-list {
+                font-size: 10px;
+                gap: 2px;
+            }
         }
         
         #all-recipes {
             background-color: #F5E6D8;
-            border-top: 1px solid #E3A868;
-            border-bottom: 1px solid #E3A868;
-            padding: 8px;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            overflow-x: auto;
-            white-space: nowrap;
+            border-top: 1px solid rgba(227, 168, 104, 0.3);
+            border-bottom: 1px solid rgba(227, 168, 104, 0.3);
+            padding: 12px;
+            font-size: 11px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+            overflow: visible;
+            white-space: normal;
+            max-height: 80px; /* 限制最大高度，保持显示区域占比不变 */
+        }
+        
+        /* 在小屏幕上调整配方卡片的大小 */
+        @media (max-width: 480px) {
+            #all-recipes {
+                grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+                font-size: 10px;
+                padding: 8px;
+                gap: 6px;
+            }
+            
+            .recipe-name {
+                font-size: 11px;
+            }
+            
+            .recipe-ingredients {
+                font-size: 9px;
+            }
+        }
+        
+        /* 在更小的屏幕上进一步调整 */
+        @media (max-width: 360px) {
+            #all-recipes {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+                font-size: 9px;
+                padding: 6px;
+                gap: 4px;
+            }
+            
+            .recipe-card {
+                padding: 4px 6px;
+            }
+            
+            .recipe-name {
+                font-size: 10px;
+                margin-bottom: 1px;
+            }
+            
+            .recipe-ingredients {
+                font-size: 8px;
+                line-height: 1.2;
+            }
+        }
+        
+        #all-recipes::-webkit-scrollbar {
+            display: none;
+        }
+        
+        #all-recipes::-webkit-scrollbar-track {
+            display: none;
+        }
+        
+        #all-recipes::-webkit-scrollbar-thumb {
+            display: none;
         }
         
         .recipe-card {
             background-color: white;
-            border: 1px solid #E3A868;
-            border-radius: 5px;
-            padding: 5px 8px;
-            margin-right: 8px;
-            flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(227, 168, 104, 0.3);
+            border-radius: 8px;
+            padding: 6px 8px;
+            margin-right: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            background-image: linear-gradient(to bottom, #FFFFFF, #FBF7F4);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .recipe-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            border-color: #E3A868;
         }
         
         .recipe-card:last-child {
@@ -159,57 +378,75 @@
         .recipe-name {
             font-weight: bold;
             color: #6B4226;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             text-align: center;
+            font-size: 12px;
         }
         
         .recipe-ingredients {
             color: #8C593A;
-            font-size: 11px;
+            font-size: 10px;
+            line-height: 1.3;
+            text-align: center;
         }
         
         #customer-interaction {
             display: flex;
-            padding: 10px;
+            padding: 15px;
             align-items: center;
             background-color: #F5E6D8;
-            border-bottom: 1px solid #E3A868;
+            border-bottom: 1px solid rgba(227, 168, 104, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         #customer-avatar {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             overflow: hidden;
             flex-shrink: 0;
-            margin-right: 10px;
-            border: 2px solid #6B4226;
-            background-color: #DDD;
+            margin-right: 15px;
+            border: 3px solid #E3A868;
+            background-color: #FFF;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        #customer-avatar:hover {
+            transform: scale(1.05);
         }
         
         #speech-bubble {
             background-color: white;
-            border-radius: 15px;
-            padding: 10px;
+            border-radius: 20px;
+            padding: 15px 20px;
             flex-grow: 1;
-            font-size: 14px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
             position: relative;
-            min-height: 60px; /* Ensure consistent height during typing animation */
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            color: #6B4226;
+            border: 1px solid rgba(227, 168, 104, 0.3);
+            background-image: linear-gradient(to bottom, #FFFFFF, #FBF7F4);
         }
         
-        #speech-bubble:before {
+        #speech-bubble::before {
             content: '';
             position: absolute;
-            left: -10px;
+            left: -12px;
             top: 50%;
             transform: translateY(-50%);
-            border-width: 10px 10px 10px 0;
+            border-width: 12px 12px 12px 0;
             border-style: solid;
             border-color: transparent white transparent transparent;
+            filter: drop-shadow(-2px 0 1px rgba(0, 0, 0, 0.1));
         }
         
         #coffee-display {
@@ -328,28 +565,43 @@
         
         #control-panel {
             background-color: #8C593A;
-            padding: 10px;
+            background-image: linear-gradient(to bottom, #8C593A, #6B4226);
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .ingredient-buttons {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
         }
         
         .ingredient-btn {
             flex: 1;
-            padding: 15px 0;
-            font-size: 16px;
+            padding: 18px 0;
+            font-size: 18px;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             color: white;
             font-weight: bold;
             box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ingredient-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+            border-radius: 15px 15px 0 0;
         }
         
         .ingredient-btn:active {
@@ -359,28 +611,46 @@
         
         #coffee-btn {
             background-color: #3C2415;
+            background-image: linear-gradient(to bottom, #4D3020, #3C2415);
         }
         
         #milk-btn {
             background-color: #E8D4BE;
+            background-image: linear-gradient(to bottom, #F2E3D4, #E8D4BE);
             color: #6B4226;
         }
         
         #water-btn {
             background-color: #A7C7E7;
+            background-image: linear-gradient(to bottom, #B8D4EE, #A7C7E7);
             color: #2C4053;
         }
         
         #finish-btn {
-            padding: 15px;
-            font-size: 18px;
+            padding: 18px;
+            font-size: 20px;
             background-color: #E3A868;
+            background-image: linear-gradient(to bottom, #EBB67C, #E3A868);
             color: #6B4226;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             font-weight: bold;
             box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        #finish-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+            border-radius: 15px 15px 0 0;
         }
         
         #finish-btn:active {
@@ -395,43 +665,197 @@
             width: 100%;
             height: 100%;
             background-color: rgba(107, 66, 38, 0.95);
+            background-image: linear-gradient(45deg, rgba(107, 66, 38, 0.98) 25%, rgba(90, 55, 31, 0.98) 25%, rgba(90, 55, 31, 0.98) 50%, rgba(107, 66, 38, 0.98) 50%, rgba(107, 66, 38, 0.98) 75%, rgba(90, 55, 31, 0.98) 75%, rgba(90, 55, 31, 0.98) 100%);
+            background-size: 56.57px 56.57px;
             display: none;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             z-index: 50;
             color: #F5E6D8;
             text-align: center;
             padding: 20px;
+            overflow-y: auto;
         }
         
         #results-screen h2 {
-            font-size: 28px;
-            margin-bottom: 20px;
+            font-size: 32px;
+            margin-bottom: 15px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #E3A868;
         }
         
-        .score-detail {
-            font-size: 18px;
-            margin-bottom: 10px;
+        .score-summary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        #barista-title {
+            font-size: 22px;
+            background-color: #E3A868;
+            color: #6B4226;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 15px;
         }
         
         #total-score {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: bold;
-            margin: 20px 0;
             color: #E3A868;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
         
-        #barista-title {
-            font-size: 24px;
+        #title-chart {
+            width: 90%;
+            max-width: 500px;
+            height: 30px;
+            background-color: #8C593A;
+            border-radius: 20px;
             margin-bottom: 30px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .title-section {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .title-section span.title-name {
+            display: block;
+        }
+        
+        .title-section span.title-value {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: rgba(245, 230, 216, 0.8);
+            white-space: nowrap;
+        }
+        
+        .title-section:last-child {
+            border-right: none;
+        }
+        
+        .title-section.active {
             background-color: #E3A868;
             color: #6B4226;
-            padding: 10px 20px;
-            border-radius: 20px;
             font-weight: bold;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        .title-section:first-child {
+            border-radius: 20px 0 0 20px;
+        }
+        
+        .title-section:last-child {
+            border-radius: 0 20px 20px 0;
+        }
+        
+        .title-marker {
+            display: none;
+        }
+        
+        #player-marker {
+            display: none;
+        }
+        
+        .score-details {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+        
+        .score-detail {
+            flex: 1;
+            font-size: 14px;
+            background: rgba(227, 168, 104, 0.1);
+            padding: 8px;
+            border-radius: 10px;
+            margin: 0 5px;
+            border: 1px solid rgba(227, 168, 104, 0.3);
+        }
+        
+        #customer-reviews-summary {
+            background: rgba(227, 168, 104, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 25px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(227, 168, 104, 0.3);
+        }
+        
+        #customer-reviews-title {
+            font-size: 20px;
+            color: #E3A868;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .customer-review-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        
+        .customer-review-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .customer-review-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 10px;
+            border: 2px solid #E3A868;
+            flex-shrink: 0;
+        }
+        
+        .customer-review-text {
+            flex-grow: 1;
+            font-size: 14px;
+            color: rgba(245, 230, 216, 0.9);
+            line-height: 1.4;
+        }
+        
+        .customer-review-score {
+            background-color: rgba(227, 168, 104, 0.2);
+            color: #E3A868;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 10px;
+            font-size: 14px;
+            flex-shrink: 0;
         }
         
         #play-again-btn {
@@ -444,7 +868,14 @@
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        #play-again-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            background-color: #EBB67C;
         }
         
         #play-again-btn:active {
@@ -601,28 +1032,43 @@
         .draining-delay-1, .draining-delay-2, .draining-delay-3, .draining-delay-4, .draining-delay-5 {
             display: none;
         }
+
+        .cup-size-info {
+            background-color: #E3A868;
+            color: #6B4226;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-block;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(107, 66, 38, 0.2);
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
         <div id="title-screen">
             <h1>快手咖啡师</h1>
-            <p>游戏规则：</p>
-            <p>根据客人订单要求，通过精准控制原料顺序、比例和时间，调制出符合标准的咖啡。</p>
-            <p>长按原料按键注入，松开停止。点击完成按钮结束调制。</p>
-            <p>所有咖啡配方将常驻显示，请根据客人对话内容判断所需咖啡类型。</p>
+            <div class="rules-container">
+                <div class="rules-title">游戏规则</div>
+                <div class="rule-item">根据客人订单要求，通过精准控制原料顺序、比例和时间，调制出符合标准的咖啡。</div>
+                <div class="rule-item">长按原料按键注入，松开停止。点击完成按钮结束调制。</div>
+                <div class="rule-item">所有咖啡配方将常驻显示，请根据客人对话内容判断所需咖啡类型。</div>
+            </div>
             <button id="start-btn">开始游戏</button>
         </div>
         
         <div id="game-interface">
             <div id="info-panel">
                 <div id="timer">
-                    剩余时间: <span id="timer-text">30</span>秒
                     <div id="timer-progress">
                         <div id="timer-bar"></div>
+                        <span id="timer-text">30</span> <!-- 添加这个元素 -->
+                        <div id="customer-count">客人: 0/5</div>
                     </div>
                 </div>
-                <div id="customer-count">客人: 0/5</div>
             </div>
             
             <div id="customer-interaction">
@@ -666,30 +1112,46 @@
         
         <div id="results-screen">
             <h2>游戏结束</h2>
-            <div id="order-accuracy" class="score-detail">订单准确性: 0%</div>
-            <div id="proportion-accuracy" class="score-detail">比例精确度: 0%</div>
-            <div id="time-efficiency" class="score-detail">时间效率: 0%</div>
-            <div id="total-score">总分: 0</div>
-            <div id="barista-title">咖啡学徒</div>
             
-            <!-- Add title progression chart -->
+            <div class="score-summary">
+                <div id="barista-title">咖啡学徒</div>
+                <div id="total-score">总分: 0</div>
+            </div>
+            
             <div id="title-chart">
                 <div class="title-section" id="title-section-1">
-                    <div class="title-marker">咖啡小白<br>0-149</div>
+                    <span class="title-name">咖啡小白</span>
+                    <span class="title-value">0</span>
                 </div>
                 <div class="title-section" id="title-section-2">
-                    <div class="title-marker">咖啡学徒<br>150-249</div>
+                    <span class="title-name">咖啡学徒</span>
+                    <span class="title-value">150</span>
                 </div>
                 <div class="title-section" id="title-section-3">
-                    <div class="title-marker">咖啡师<br>250-349</div>
+                    <span class="title-name">咖啡师</span>
+                    <span class="title-value">250</span>
                 </div>
                 <div class="title-section" id="title-section-4">
-                    <div class="title-marker">资深咖啡师<br>350-449</div>
+                    <span class="title-name">资深咖啡师</span>
+                    <span class="title-value">350</span>
                 </div>
                 <div class="title-section" id="title-section-5">
-                    <div class="title-marker">咖啡大师<br>450+</div>
+                    <span class="title-name">咖啡大师</span>
+                    <span class="title-value">450+</span>
                 </div>
-                <div id="player-marker"></div>
+            </div>
+            
+            <div class="score-details">
+                <div id="order-accuracy" class="score-detail">订单准确性: 0%</div>
+                <div id="proportion-accuracy" class="score-detail">比例精确度: 0%</div>
+                <div id="time-efficiency" class="score-detail">时间效率: 0%</div>
+            </div>
+            
+            <div id="customer-reviews-summary">
+                <div id="customer-reviews-title">客人评价回顾</div>
+                <div id="customer-reviews-list">
+                    <!-- 客人评价会在这里动态生成 -->
+                </div>
             </div>
             
             <button id="play-again-btn">再来一局</button>
@@ -855,6 +1317,18 @@
                 "我想你需要重新学习如何制作咖啡...",
                 "啊，太糟糕了，我甚至不想喝第二口。"
             ],
+            empty: [
+                // 商务人士 - 0
+                "你是在开玩笑吗？这是空杯子！我赶时间，这太不尊重人了。",
+                // 年轻女性 - 1
+                "呃...你给我的是空杯子？这是什么新型减肥咖啡吗？",
+                // 老年人 - 2
+                "孩子，你是不是忘记了什么？杯子里什么都没有啊。",
+                // 学生 - 3
+                "哈哈，这是隐形咖啡吗？我还以为只有考试答案才会隐形呢！",
+                // 艺术家 - 4
+                "空杯子...有趣的概念艺术，但我真的只是想喝杯咖啡而已。"
+            ],
             overflow: [
                 // 商务人士 - 0
                 "这太不专业了！我要投诉给你们经理。",
@@ -882,6 +1356,7 @@
             currentLayers: [],
             ingredientHistory: [],
             scores: [],
+            customerReviews: [], // 存储客人评价
             currentCupSize: 'medium', // 当前杯子尺寸
             cupSizeCapacity: {
                 small: 30,  // 小杯容量为30%
@@ -926,26 +1401,31 @@
 
         // 显示所有配方
         function displayAllRecipes() {
-            const allRecipesContainer = document.getElementById('all-recipes');
-            allRecipesContainer.innerHTML = '';
+            // 获取recipe-hint元素，用于显示配方列表
+            const recipeHint = document.getElementById('recipe-hint');
+            recipeHint.innerHTML = '';
             
+            // 创建配方列表容器
+            const recipeList = document.createElement('div');
+            recipeList.className = 'recipe-list';
+            
+            // 添加所有配方，每个配方占一行
             for (const key in RECIPES) {
                 const recipe = RECIPES[key];
-                const recipeCard = document.createElement('div');
-                recipeCard.className = 'recipe-card';
+                const recipeItem = document.createElement('div');
+                recipeItem.className = 'recipe-item';
+                recipeItem.textContent = `${recipe.name}: ${recipe.description}`;
                 
-                const recipeName = document.createElement('div');
-                recipeName.className = 'recipe-name';
-                recipeName.textContent = recipe.name;
-                
-                const recipeIngredients = document.createElement('div');
-                recipeIngredients.className = 'recipe-ingredients';
-                recipeIngredients.textContent = recipe.description;
-                
-                recipeCard.appendChild(recipeName);
-                recipeCard.appendChild(recipeIngredients);
-                allRecipesContainer.appendChild(recipeCard);
+                // 添加到列表中
+                recipeList.appendChild(recipeItem);
             }
+            
+            // 将配方列表添加到recipe-hint
+            recipeHint.appendChild(recipeList);
+            
+            // 清空原来的all-recipes容器
+            const allRecipesContainer = document.getElementById('all-recipes');
+            allRecipesContainer.style.display = 'none';
         }
 
         // 游戏初始化
@@ -954,7 +1434,6 @@
                 isPlaying: true,
                 currentOrder: null,
                 currentCustomer: 0,
-                currentCustomerType: 0,
                 maxCustomers: 5,
                 timeLeft: 30,
                 timer: null,
@@ -962,6 +1441,7 @@
                 currentLayers: [],
                 ingredientHistory: [],
                 scores: [],
+                customerReviews: [],
                 currentCupSize: 'medium',
                 cupSizeCapacity: {
                     small: 30,
@@ -974,6 +1454,10 @@
                     timeEfficiency: 0
                 }
             };
+            
+            // 显示游戏界面
+            titleScreen.style.display = "none";
+            gameInterface.style.display = "flex";
             
             // 显示所有配方
             displayAllRecipes();
@@ -1002,38 +1486,28 @@
             // 添加容量指示器
             addCapacityIndicator(coffeeCup, gameState.cupSizeCapacity[gameState.currentCupSize]);
             
-            // 更新配方提示
-            let cupSizeText = '';
-            switch(gameState.currentCupSize) {
-                case 'small':
-                    cupSizeText = '小杯 (30%)';
-                    break;
-                case 'medium':
-                    cupSizeText = '中杯 (60%)';
-                    break;
-                case 'large':
-                    cupSizeText = '大杯 (100%)';
-                    break;
-            }
-            recipeHint.textContent = `新订单已到达 (${cupSizeText})，请仔细听取客人需求`;
+            // 设置计时器
+            gameState.timeLeft = 30;
+            gameState.timer = setInterval(updateTimer, 1000);
             
-            // 显示随机点单对白
+            // 更新计时器显示
+            const timerText = document.getElementById('timer-text');
+            timerText.textContent = gameState.timeLeft;
+            
+            // 更新进度条
+            const timerBar = document.getElementById('timer-bar');
+            timerBar.style.width = '100%';
+            timerBar.style.backgroundColor = '#E3A868';
+            
+            // 显示随机点单对白，使用打字效果
             const randomDialogueIndex = Math.floor(Math.random() * gameState.currentOrder.orderDialogues.length);
             displayDialogue(gameState.currentOrder.orderDialogues[randomDialogueIndex]);
             
             // 更新客人计数
             customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
             
-            // 重置进度条
-            const timerBar = document.getElementById('timer-bar');
-            timerBar.style.width = '100%';
-            timerBar.style.backgroundColor = '#E3A868';
-            
-            // 设置计时器
-            if (gameState.timer) {
-                clearInterval(gameState.timer);
-            }
-            gameState.timer = setInterval(updateTimer, 1000);
+            // 隐藏溢出提示
+            document.getElementById('overflow-message').style.display = 'none';
             
             // 强制浏览器重排
             coffeeCup.offsetHeight;
@@ -1080,17 +1554,12 @@
             const speechBubble = document.getElementById('speech-bubble');
             speechBubble.innerHTML = ''; // Clear previous text
             
-            const cursor = document.createElement('span');
-            cursor.className = 'typing-cursor';
-            speechBubble.appendChild(cursor);
-            
             let i = 0;
             const typingSpeed = 50; // milliseconds per character
             
             function typeNextChar() {
                 if (i < text.length) {
-                    // Insert the character before the cursor
-                    speechBubble.insertBefore(document.createTextNode(text.charAt(i)), cursor);
+                    speechBubble.textContent += text.charAt(i);
                     i++;
                     setTimeout(typeNextChar, typingSpeed);
                 }
@@ -1101,93 +1570,74 @@
 
         // 处理下一位客人
         function nextCustomer() {
-            gameState.currentCustomer++;
-            
-            if (gameState.currentCustomer > gameState.maxCustomers) {
+            // 如果已经达到最大客人数量，结束游戏
+            if (gameState.currentCustomer >= gameState.maxCustomers) {
                 endGame();
                 return;
             }
             
-            // 先让当前杯子滑出（向左）
-            const coffeeCup = document.getElementById('coffee-cup');
-            coffeeCup.style.transition = 'transform 0.5s ease-in-out';
-            coffeeCup.style.transform = 'translateX(-100%)';
+            // 增加客人计数
+            gameState.currentCustomer++;
             
-            // 延迟重置杯子和设置新客人
-            setTimeout(() => {
-                // 重置杯子和计时器
-                resetCup();
-                gameState.timeLeft = 30;
-                document.getElementById('timer-text').textContent = gameState.timeLeft;
-                
-                // 重置进度条
-                const timerBar = document.getElementById('timer-bar');
-                timerBar.style.width = '100%';
-                timerBar.style.backgroundColor = '#E3A868';
-                
-                // 清除旧计时器并设置新计时器
-                if (gameState.timer) {
-                    clearInterval(gameState.timer);
-                }
-                gameState.timer = setInterval(updateTimer, 1000);
-                
-                // 随机选择客人类型
-                gameState.currentCustomerType = Math.floor(Math.random() * CUSTOMER_AVATARS.length);
-                
-                // 设置客人头像
-                customerAvatar.innerHTML = CUSTOMER_AVATARS[gameState.currentCustomerType];
-                
-                // 生成新订单
-                gameState.currentOrder = getRandomOrder();
-                
-                // 随机选择杯子尺寸
-                const cupSizes = ['small', 'medium', 'large'];
-                gameState.currentCupSize = cupSizes[Math.floor(Math.random() * cupSizes.length)];
-                
-                // 应用杯子尺寸
-                coffeeCup.className = `cup-${gameState.currentCupSize}`;
-                
-                // 立即将杯子移动到右侧（无动画）
-                coffeeCup.style.transition = 'none';
-                coffeeCup.style.transform = 'translateX(100%)';
-                
-                // 添加容量指示器
-                addCapacityIndicator(coffeeCup, gameState.cupSizeCapacity[gameState.currentCupSize]);
-                
-                // 更新配方提示 - 添加杯子尺寸提示
-                let cupSizeText = '';
-                switch(gameState.currentCupSize) {
-                    case 'small':
-                        cupSizeText = '小杯 (30%)';
-                        break;
-                    case 'medium':
-                        cupSizeText = '中杯 (60%)';
-                        break;
-                    case 'large':
-                        cupSizeText = '大杯 (100%)';
-                        break;
-                }
-                recipeHint.textContent = `新订单已到达 (${cupSizeText})，请仔细听取客人需求`;
-                
-                // 显示随机点单对白，使用打字效果
-                const randomDialogueIndex = Math.floor(Math.random() * gameState.currentOrder.orderDialogues.length);
-                displayDialogue(gameState.currentOrder.orderDialogues[randomDialogueIndex]);
-                
-                // 更新客人计数
-                customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
-                
-                // 隐藏溢出提示
-                document.getElementById('overflow-message').style.display = 'none';
-                
-                // 强制浏览器重排
-                coffeeCup.offsetHeight;
-                
-                // 添加入场动画
-                requestAnimationFrame(() => {
-                    coffeeCup.style.transition = 'transform 0.5s ease-in-out';
-                    coffeeCup.style.transform = 'translateX(0)';
-                });
-            }, 500); // 等待杯子滑出动画完成
+            // 重置杯子
+            resetCup();
+            
+            // 获取新订单
+            gameState.currentOrder = getRandomOrder();
+            
+            // 随机选择客人类型
+            gameState.currentCustomerType = Math.floor(Math.random() * CUSTOMER_AVATARS.length);
+            
+            // 设置客人头像
+            customerAvatar.innerHTML = CUSTOMER_AVATARS[gameState.currentCustomerType];
+            
+            // 随机选择杯子尺寸
+            const cupSizes = ['small', 'medium', 'large'];
+            gameState.currentCupSize = cupSizes[Math.floor(Math.random() * cupSizes.length)];
+            
+            // 重置计时器
+            gameState.timeLeft = 30;
+            gameState.timer = setInterval(updateTimer, 1000);
+            
+            // 更新计时器显示
+            const timerText = document.getElementById('timer-text');
+            timerText.textContent = gameState.timeLeft;
+            
+            // 更新进度条
+            const timerBar = document.getElementById('timer-bar');
+            timerBar.style.width = '100%';
+            timerBar.style.backgroundColor = '#E3A868';
+            
+            // 获取杯子元素并设置初始状态
+            const coffeeCup = document.getElementById('coffee-cup');
+            coffeeCup.className = `cup-${gameState.currentCupSize}`;
+            coffeeCup.style.transform = 'translateX(200%)';
+            coffeeCup.style.transition = 'none';
+            
+            // 添加容量指示器
+            addCapacityIndicator(coffeeCup, gameState.cupSizeCapacity[gameState.currentCupSize]);
+            
+            // 显示配方列表
+            displayAllRecipes();
+            
+            // 显示随机点单对白，使用打字效果
+            const randomDialogueIndex = Math.floor(Math.random() * gameState.currentOrder.orderDialogues.length);
+            displayDialogue(gameState.currentOrder.orderDialogues[randomDialogueIndex]);
+            
+            // 更新客人计数
+            customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
+            
+            // 隐藏溢出提示
+            document.getElementById('overflow-message').style.display = 'none';
+            
+            // 强制浏览器重排
+            coffeeCup.offsetHeight;
+            
+            // 添加入场动画
+            requestAnimationFrame(() => {
+                coffeeCup.style.transition = 'transform 0.5s ease-in-out';
+                coffeeCup.style.transform = 'translateX(0)';
+            });
         }
 
         // 添加容量指示器
@@ -1316,6 +1766,27 @@
             
             // 检查杯子是否为空
             if (totalHeight === 0) {
+                // 根据客人类型显示不同的空杯子反馈，使用打字效果
+                const emptyDialogue = CUSTOMER_FEEDBACK.empty[gameState.currentCustomerType];
+                displayDialogue(emptyDialogue);
+                
+                // 存储客人评价
+                gameState.customerReviews.push({
+                    customerType: gameState.currentCustomerType,
+                    feedback: emptyDialogue,
+                    score: 0,
+                    orderType: gameState.currentOrder.name,
+                    isEmpty: true
+                });
+                
+                // 存储本次得分
+                gameState.scores.push({
+                    total: 0,
+                    order: 0,
+                    proportion: 0,
+                    time: 0
+                });
+                
                 showFeedback("杯子是空的!", 0, "请添加原料后再完成。");
                 return;
             }
@@ -1386,7 +1857,16 @@
                 // 随机选择相应类型的评价，并使用打字效果显示
                 const feedbackArray = CUSTOMER_FEEDBACK[feedbackType];
                 const randomFeedbackIndex = Math.floor(Math.random() * feedbackArray.length);
-                displayDialogue(feedbackArray[randomFeedbackIndex]);
+                const feedbackText = feedbackArray[randomFeedbackIndex];
+                displayDialogue(feedbackText);
+                
+                // 存储客人评价
+                gameState.customerReviews.push({
+                    customerType: gameState.currentCustomerType,
+                    feedback: feedbackText,
+                    score: totalScore,
+                    orderType: gameState.currentOrder.name
+                });
                 
                 // 显示反馈
                 const feedbackMsg = getFeedbackMessage(totalScore);
@@ -1624,6 +2104,9 @@
             const proportionAccuracy = Math.floor(gameState.scores.reduce((sum, score) => sum + score.proportion, 0) / gameState.scores.length) || 0;
             const timeEfficiency = Math.floor(gameState.scores.reduce((sum, score) => sum + score.time, 0) / gameState.scores.length) || 0;
             
+            // 显示客人评价总结
+            displayCustomerReviews();
+            
             // 更新结果屏幕
             document.getElementById('order-accuracy').textContent = `订单准确性: ${orderAccuracy}%`;
             document.getElementById('proportion-accuracy').textContent = `比例精确度: ${proportionAccuracy}%`;
@@ -1661,43 +2144,65 @@
             // 高亮当前称号
             document.getElementById(`title-section-${titleSection}`).classList.add('active');
             
-            // 更精确地设置玩家标记位置
-            let markerPosition;
-            
-            if (totalScore < 150) {
-                // 0-149分范围内的线性映射
-                const percentage = totalScore / 150;
-                markerPosition = 10 + percentage * 20;
-            } else if (totalScore < 250) {
-                // 150-249分范围内的线性映射
-                const percentage = (totalScore - 150) / 100;
-                markerPosition = 30 + percentage * 20;
-            } else if (totalScore < 350) {
-                // 250-349分范围内的线性映射
-                const percentage = (totalScore - 250) / 100;
-                markerPosition = 50 + percentage * 20;
-            } else if (totalScore < 450) {
-                // 350-449分范围内的线性映射
-                const percentage = (totalScore - 350) / 100;
-                markerPosition = 70 + percentage * 20;
-            } else {
-                // 450分以上
-                const percentage = Math.min((totalScore - 450) / 50, 1);
-                markerPosition = 90 + percentage * 10;
-                markerPosition = Math.min(markerPosition, 99); // 最高不超过99%
-            }
-            
-            // 设置玩家标记位置
-            document.getElementById('player-marker').style.left = `${markerPosition}%`;
-            
             // 显示结果屏幕
             resultsScreen.style.display = "flex";
+        }
+        
+        // 显示客人评价总结
+        function displayCustomerReviews() {
+            const reviewsList = document.getElementById('customer-reviews-list');
+            reviewsList.innerHTML = '';
+            
+            // 如果没有评价，显示提示信息
+            if (gameState.customerReviews.length === 0) {
+                reviewsList.innerHTML = '<div class="customer-review-item">暂无客人评价</div>';
+                return;
+            }
+            
+            // 显示所有客人评价
+            gameState.customerReviews.forEach((review, index) => {
+                const reviewItem = document.createElement('div');
+                reviewItem.className = 'customer-review-item';
+                
+                const avatar = document.createElement('div');
+                avatar.className = 'customer-review-avatar';
+                avatar.innerHTML = CUSTOMER_AVATARS[review.customerType];
+                
+                const text = document.createElement('div');
+                text.className = 'customer-review-text';
+                
+                // 根据评价类型添加标记
+                if (review.isOverflow) {
+                    text.innerHTML = `<span style="color: #FF5252;">[溢出]</span> ${review.feedback}`;
+                } else if (review.isEmpty) {
+                    text.innerHTML = `<span style="color: #FF9800;">[空杯]</span> ${review.feedback}`;
+                } else {
+                    text.textContent = review.feedback;
+                }
+                
+                const score = document.createElement('div');
+                score.className = 'customer-review-score';
+                score.textContent = `${review.score}分`;
+                
+                // 根据分数调整颜色
+                if (review.score >= 70) {
+                    score.style.color = '#4CAF50';
+                } else if (review.score >= 40) {
+                    score.style.color = '#FFC107';
+                } else {
+                    score.style.color = '#FF5252';
+                }
+                
+                reviewItem.appendChild(avatar);
+                reviewItem.appendChild(text);
+                reviewItem.appendChild(score);
+                
+                reviewsList.appendChild(reviewItem);
+            });
         }
 
         // 事件监听器
         startBtn.addEventListener('click', () => {
-            titleScreen.style.display = "none";
-            gameInterface.style.display = "flex";
             initGame();
         });
 
@@ -1905,6 +2410,15 @@
             // 根据客人类型显示不同的溢出反馈，使用打字效果
             const overflowDialogue = CUSTOMER_FEEDBACK.overflow[gameState.currentCustomerType];
             displayDialogue(overflowDialogue);
+            
+            // 存储客人评价
+            gameState.customerReviews.push({
+                customerType: gameState.currentCustomerType,
+                feedback: overflowDialogue,
+                score: totalScore,
+                orderType: gameState.currentOrder.name,
+                isOverflow: true
+            });
             
             // 添加液体排空动画
             setTimeout(() => {
