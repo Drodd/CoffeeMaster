@@ -1048,7 +1048,6 @@
     </style>
 </head>
 <body>
-    <audio id="bgm" src="cm_bgm.mp3" preload="auto" loop></audio>
     <div id="game-container">
         <div id="title-screen">
             <h1>快手咖啡师</h1>
@@ -1058,7 +1057,7 @@
                 <div class="rule-item">长按原料按键注入，松开停止。点击完成按钮结束调制。</div>
                 <div class="rule-item">所有咖啡配方将常驻显示，请根据客人对话内容判断所需咖啡类型。</div>
             </div>
-            <button id="start-btn" style="display: none;">开始游戏</button>
+            <button id="start-btn">开始游戏</button>
         </div>
         
         <div id="game-interface">
@@ -1160,23 +1159,6 @@
     </div>
 
     <script>
-        // 音频相关
-        const bgm = document.getElementById('bgm');
-        
-        // 监听音频加载完成事件
-        bgm.addEventListener('canplaythrough', () => {
-            // 显示开始按钮
-            startBtn.style.display = 'block';
-            // 开始播放背景音乐
-            bgm.play().catch(error => {
-                console.log('自动播放被阻止:', error);
-                // 大多数浏览器需要用户交互才能播放音频
-                startBtn.addEventListener('click', () => {
-                    bgm.play();
-                }, { once: true });
-            });
-        });
-
         // 咖啡配方定义
         const RECIPES = {
             latte: {
