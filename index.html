@@ -231,7 +231,6 @@
             position: relative;
             border: 5px solid #DDD;
             overflow: hidden;
-            transition: transform 0.5s ease-in-out;
         }
         
         /* 添加不同尺寸的咖啡杯样式 */
@@ -289,11 +288,19 @@
         }
         
         .cup-enter {
-            transform: translateX(-100vw);
+            transform: translateX(200%);
+            transition: transform 0.5s ease-in-out;
         }
         
         .cup-exit {
-            transform: translateX(100vw);
+            transform: translateX(-200%);
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        /* 添加一个新的类用于立即重置杯子位置（无动画） */
+        .cup-reset {
+            transform: translateX(200%);
+            transition: none !important;
         }
         
         .liquid-layer {
@@ -579,6 +586,21 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+        
+        /* 添加液体排空动画 */
+        @keyframes drain-liquid {
+            0% { height: var(--initial-height); }
+            100% { height: 0%; }
+        }
+        
+        .draining {
+            animation: drain-liquid var(--drain-duration) linear forwards;
+        }
+        
+        /* 移除之前的延迟类，因为我们将使用动态计算的延迟 */
+        .draining-delay-1, .draining-delay-2, .draining-delay-3, .draining-delay-4, .draining-delay-5 {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -589,8 +611,6 @@
             <p>根据客人订单要求，通过精准控制原料顺序、比例和时间，调制出符合标准的咖啡。</p>
             <p>长按原料按键注入，松开停止。点击完成按钮结束调制。</p>
             <p>所有咖啡配方将常驻显示，请根据客人对话内容判断所需咖啡类型。</p>
-            <p>注意：原料总量超过100%会导致咖啡溢出，立即失败！</p>
-            <p>每局需要调制5位客人的咖啡，根据顺序正确性、比例误差率、完成速度进行评分。</p>
             <button id="start-btn">开始游戏</button>
         </div>
         
@@ -942,11 +962,11 @@
                 currentLayers: [],
                 ingredientHistory: [],
                 scores: [],
-                currentCupSize: 'medium', // 默认中杯
+                currentCupSize: 'medium',
                 cupSizeCapacity: {
-                    small: 30,  // 小杯容量为30%
-                    medium: 60, // 中杯容量为60%
-                    large: 100  // 大杯容量为100%
+                    small: 30,
+                    medium: 60,
+                    large: 100
                 },
                 scoreDetails: {
                     orderAccuracy: 0,
@@ -961,29 +981,68 @@
             // 重置杯子
             resetCup();
             
-            // 设置杯子初始位置在屏幕外
-            const coffeeCup = document.getElementById('coffee-cup');
-            coffeeCup.classList.add('cup-enter');
+            // 生成第一个订单
+            gameState.currentCustomer = 1;
+            gameState.currentOrder = getRandomOrder();
+            gameState.currentCustomerType = Math.floor(Math.random() * CUSTOMER_AVATARS.length);
             
-            // 短暂延迟后开始游戏并移除入场动画类
-            setTimeout(() => {
-                coffeeCup.classList.remove('cup-enter');
-                nextCustomer();
-                
-                // 清除可能存在的旧计时器
-                if (gameState.timer) {
-                    clearInterval(gameState.timer);
-                }
-                
-                // 设置新计时器
-                gameState.timer = setInterval(updateTimer, 1000);
-                
-                // 更新界面
-                customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
-                
-                // 重置进度条
-                document.getElementById('timer-bar').style.width = '100%';
-            }, 50);
+            // 设置客人头像
+            customerAvatar.innerHTML = CUSTOMER_AVATARS[gameState.currentCustomerType];
+            
+            // 随机选择杯子尺寸
+            const cupSizes = ['small', 'medium', 'large'];
+            gameState.currentCupSize = cupSizes[Math.floor(Math.random() * cupSizes.length)];
+            
+            // 获取杯子元素并设置初始状态
+            const coffeeCup = document.getElementById('coffee-cup');
+            coffeeCup.className = `cup-${gameState.currentCupSize}`;
+            coffeeCup.style.transform = 'translateX(200%)';
+            coffeeCup.style.transition = 'none';
+            
+            // 添加容量指示器
+            addCapacityIndicator(coffeeCup, gameState.cupSizeCapacity[gameState.currentCupSize]);
+            
+            // 更新配方提示
+            let cupSizeText = '';
+            switch(gameState.currentCupSize) {
+                case 'small':
+                    cupSizeText = '小杯 (30%)';
+                    break;
+                case 'medium':
+                    cupSizeText = '中杯 (60%)';
+                    break;
+                case 'large':
+                    cupSizeText = '大杯 (100%)';
+                    break;
+            }
+            recipeHint.textContent = `新订单已到达 (${cupSizeText})，请仔细听取客人需求`;
+            
+            // 显示随机点单对白
+            const randomDialogueIndex = Math.floor(Math.random() * gameState.currentOrder.orderDialogues.length);
+            displayDialogue(gameState.currentOrder.orderDialogues[randomDialogueIndex]);
+            
+            // 更新客人计数
+            customerCount.textContent = `客人: ${gameState.currentCustomer}/${gameState.maxCustomers}`;
+            
+            // 重置进度条
+            const timerBar = document.getElementById('timer-bar');
+            timerBar.style.width = '100%';
+            timerBar.style.backgroundColor = '#E3A868';
+            
+            // 设置计时器
+            if (gameState.timer) {
+                clearInterval(gameState.timer);
+            }
+            gameState.timer = setInterval(updateTimer, 1000);
+            
+            // 强制浏览器重排
+            coffeeCup.offsetHeight;
+            
+            // 添加入场动画
+            requestAnimationFrame(() => {
+                coffeeCup.style.transition = 'transform 0.5s ease-in-out';
+                coffeeCup.style.transform = 'translateX(0)';
+            });
         }
 
         // 更新计时器
@@ -1049,9 +1108,10 @@
                 return;
             }
             
-            // 先让当前杯子滑出
+            // 先让当前杯子滑出（向左）
             const coffeeCup = document.getElementById('coffee-cup');
-            coffeeCup.classList.add('cup-exit');
+            coffeeCup.style.transition = 'transform 0.5s ease-in-out';
+            coffeeCup.style.transform = 'translateX(-100%)';
             
             // 延迟重置杯子和设置新客人
             setTimeout(() => {
@@ -1084,10 +1144,12 @@
                 const cupSizes = ['small', 'medium', 'large'];
                 gameState.currentCupSize = cupSizes[Math.floor(Math.random() * cupSizes.length)];
                 
-                // 应用杯子尺寸 - 确保清除所有类并正确应用新类
-                coffeeCup.className = ''; // 清除所有类
-                coffeeCup.removeAttribute('style'); // 移除可能的内联样式
-                coffeeCup.classList.add(`cup-${gameState.currentCupSize}`);
+                // 应用杯子尺寸
+                coffeeCup.className = `cup-${gameState.currentCupSize}`;
+                
+                // 立即将杯子移动到右侧（无动画）
+                coffeeCup.style.transition = 'none';
+                coffeeCup.style.transform = 'translateX(100%)';
                 
                 // 添加容量指示器
                 addCapacityIndicator(coffeeCup, gameState.cupSizeCapacity[gameState.currentCupSize]);
@@ -1117,18 +1179,14 @@
                 // 隐藏溢出提示
                 document.getElementById('overflow-message').style.display = 'none';
                 
-                // 让新杯子从左侧滑入
-                coffeeCup.classList.add('cup-enter');
+                // 强制浏览器重排
+                coffeeCup.offsetHeight;
                 
-                // 短暂延迟后移除入场动画类
-                setTimeout(() => {
-                    coffeeCup.classList.remove('cup-enter');
-                    
-                    // 确保杯子尺寸类仍然存在
-                    if (!coffeeCup.classList.contains(`cup-${gameState.currentCupSize}`)) {
-                        coffeeCup.classList.add(`cup-${gameState.currentCupSize}`);
-                    }
-                }, 500); // 增加延迟时间，使动画更明显
+                // 添加入场动画
+                requestAnimationFrame(() => {
+                    coffeeCup.style.transition = 'transform 0.5s ease-in-out';
+                    coffeeCup.style.transform = 'translateX(0)';
+                });
             }, 500); // 等待杯子滑出动画完成
         }
 
@@ -1262,48 +1320,82 @@
                 return;
             }
             
-            // 计算顺序正确性评分
-            let orderScore = calculateOrderScore();
+            // 添加液体排空动画，按照后进先出的顺序
+            const liquidLayers = Array.from(coffeeCup.querySelectorAll('.liquid-layer'));
+            liquidLayers.reverse();
             
-            // 计算比例误差率评分
-            let proportionScore = calculateProportionScore();
+            // 计算每个层的动画延迟和持续时间
+            const TOTAL_ANIMATION_TIME = 500; // 总动画时间保持在500ms
+            let currentDelay = 0;
             
-            // 计算时间评分
-            let timeScore = calculateTimeScore(isTimeout);
-            
-            // 计算总分
-            let totalScore = Math.floor((orderScore + proportionScore + timeScore) / 3);
-            
-            // 存储本次得分和各项指标得分
-            gameState.scores.push({
-                total: totalScore,
-                order: orderScore,
-                proportion: proportionScore,
-                time: timeScore
+            liquidLayers.forEach((layer, index) => {
+                // 获取当前层的高度百分比
+                const heightPercentage = parseFloat(layer.style.height);
+                
+                // 保存当前高度作为动画起始值
+                layer.style.setProperty('--initial-height', layer.style.height);
+                
+                // 计算这个层的动画时间（基于其高度占总高度的比例）
+                const layerDuration = (heightPercentage / 100) * TOTAL_ANIMATION_TIME;
+                
+                // 设置动画延迟和持续时间
+                layer.style.setProperty('--drain-duration', `${layerDuration}ms`);
+                layer.style.animationDelay = `${currentDelay}ms`;
+                
+                // 更新下一层的延迟时间
+                currentDelay += layerDuration;
+                
+                // 添加排空动画类
+                requestAnimationFrame(() => {
+                    layer.classList.add('draining');
+                });
             });
             
-            // 根据总分显示客人评价
-            let feedbackType;
-            if (totalScore >= 70) {
-                feedbackType = "good";
-            } else if (totalScore >= 40) {
-                feedbackType = "average";
-            } else {
-                feedbackType = "bad";
-            }
-            
-            // 随机选择相应类型的评价，并使用打字效果显示
-            const feedbackArray = CUSTOMER_FEEDBACK[feedbackType];
-            const randomFeedbackIndex = Math.floor(Math.random() * feedbackArray.length);
-            displayDialogue(feedbackArray[randomFeedbackIndex]);
-            
-            // 显示反馈
-            const feedbackMsg = getFeedbackMessage(totalScore);
-            showFeedback(
-                feedbackMsg, 
-                totalScore, 
-                `顺序: ${orderScore}分 | 比例: ${proportionScore}分 | 时间: ${timeScore}分`
-            );
+            // 等待所有动画完成后显示评分
+            setTimeout(() => {
+                // 计算顺序正确性评分
+                let orderScore = calculateOrderScore();
+                
+                // 计算比例误差率评分
+                let proportionScore = calculateProportionScore();
+                
+                // 计算时间评分
+                let timeScore = calculateTimeScore(isTimeout);
+                
+                // 计算总分
+                let totalScore = Math.floor((orderScore + proportionScore + timeScore) / 3);
+                
+                // 存储本次得分和各项指标得分
+                gameState.scores.push({
+                    total: totalScore,
+                    order: orderScore,
+                    proportion: proportionScore,
+                    time: timeScore
+                });
+                
+                // 根据总分显示客人评价
+                let feedbackType;
+                if (totalScore >= 70) {
+                    feedbackType = "good";
+                } else if (totalScore >= 40) {
+                    feedbackType = "average";
+                } else {
+                    feedbackType = "bad";
+                }
+                
+                // 随机选择相应类型的评价，并使用打字效果显示
+                const feedbackArray = CUSTOMER_FEEDBACK[feedbackType];
+                const randomFeedbackIndex = Math.floor(Math.random() * feedbackArray.length);
+                displayDialogue(feedbackArray[randomFeedbackIndex]);
+                
+                // 显示反馈
+                const feedbackMsg = getFeedbackMessage(totalScore);
+                showFeedback(
+                    feedbackMsg, 
+                    totalScore, 
+                    `顺序: ${orderScore}分 | 比例: ${proportionScore}分 | 时间: ${timeScore}分`
+                );
+            }, TOTAL_ANIMATION_TIME);
         }
 
         // 计算顺序正确性评分
@@ -1814,11 +1906,47 @@
             const overflowDialogue = CUSTOMER_FEEDBACK.overflow[gameState.currentCustomerType];
             displayDialogue(overflowDialogue);
             
-            showFeedback(
-                "咖啡溢出!", 
-                totalScore, 
-                "请注意控制原料总量不超过100%"
-            );
+            // 添加液体排空动画
+            setTimeout(() => {
+                const liquidLayers = Array.from(coffeeCup.querySelectorAll('.liquid-layer'));
+                liquidLayers.reverse();
+                
+                // 计算每个层的动画延迟和持续时间
+                const TOTAL_ANIMATION_TIME = 500; // 总动画时间保持在500ms
+                let currentDelay = 0;
+                
+                liquidLayers.forEach((layer, index) => {
+                    // 获取当前层的高度百分比
+                    const heightPercentage = parseFloat(layer.style.height);
+                    
+                    // 保存当前高度作为动画起始值
+                    layer.style.setProperty('--initial-height', layer.style.height);
+                    
+                    // 计算这个层的动画时间（基于其高度占总高度的比例）
+                    const layerDuration = (heightPercentage / 100) * TOTAL_ANIMATION_TIME;
+                    
+                    // 设置动画延迟和持续时间
+                    layer.style.setProperty('--drain-duration', `${layerDuration}ms`);
+                    layer.style.animationDelay = `${currentDelay}ms`;
+                    
+                    // 更新下一层的延迟时间
+                    currentDelay += layerDuration;
+                    
+                    // 添加排空动画类
+                    requestAnimationFrame(() => {
+                        layer.classList.add('draining');
+                    });
+                });
+                
+                // 延迟显示反馈，等待所有液体排空动画完成
+                setTimeout(() => {
+                    showFeedback(
+                        "咖啡溢出!", 
+                        totalScore, 
+                        "请注意控制原料总量不超过100%"
+                    );
+                }, TOTAL_ANIMATION_TIME);
+            }, 1000); // 等待摇晃动画完成后再开始排空
         }
     </script>
 
